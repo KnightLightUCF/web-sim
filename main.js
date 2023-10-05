@@ -20,7 +20,7 @@ Dlight.castShadow = true;
 Dlight.shadow.camera.top = 50;
 Dlight.shadow.camera.bottom = -50;
 Dlight.shadow.camera.right = 50;
-Dlight.shadow.camera.left = -50
+Dlight.shadow.camera.left = -50;
 scene.add( light );
 scene.add(Dlight);
 
