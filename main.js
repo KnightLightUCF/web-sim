@@ -83,12 +83,36 @@ loader.load( './models/arena.glb', ( glb ) => {
 
 } );
 
-// we need a way to fetch x number of drone trajectories.
-fetch('./sample_data/2_Drones_Up_Down/drones/Drone 2/trajectory.json')
-	.then(response => response.json())
-	.then(data => {
-		initializeTrajectory(data);
-	});
+// we need a way to fetch x number of drone trajectories. <just wait for the next commit 😉>
+// fetch('./sample_data/2_Drones_Up_Down/drones/Drone 1/trajectory.json')
+// 	.then(response => response.json())
+// 	.then(data => {
+// 		initializeTrajectory(data);
+// 	});
+
+// New import method
+fetch('./sample_data/2_Drones_Up_Down.skyc')
+    .then(response => response.blob())
+    .then(blob => {
+        const jszip = new JSZip();
+        return jszip.loadAsync(blob);
+    })
+    .then(zip => {
+        // Path to the desired file
+        const filePath = 'drones/Drone 1/trajectory.json';
+		// Get file contents as a string
+        return zip.file(filePath).async('string');
+    })
+    .then(data => {
+		// Convert string data to JSON
+        const jsonData = JSON.parse(data);
+		// Call initializeTrajectory
+        initializeTrajectory(jsonData);
+    })
+    .catch(error => {
+		// We won't make errors, but just incase
+        console.error("File processing error:", error);
+    });
 
 function animate() {
 	requestAnimationFrame( animate );
