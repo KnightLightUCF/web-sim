@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "time": 0.042,
+      "name": "at Takeoff grid"
+    },
+    {
+      "time": 4.042,
+      "name": "at Takeoff"
+    },
+    {
+      "time": 10.042,
+      "name": "at Landing"
+    }
+  ]
+}

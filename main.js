@@ -4,6 +4,11 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import renderGUI from './modules/gui';
 import helpers from './modules/helpers';
 import controls from './modules/controls';
+import {show_animation, initializeTrajectory} from './modules/show_animation';
+
+let showState = {
+	playing: false
+};
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 5000 );
@@ -31,6 +36,8 @@ scene.add( stadiumMesh );
 stadiumMesh.receiveShadow = true;
 stadiumMesh.rotation.x = .5 * Math.PI;
 
+stadiumMesh.position.set(-200, -5, -200);
+
 const fieldGeo = new THREE.PlaneGeometry( 200, 200);
 const fieldMat = new THREE.MeshStandardMaterial({color: 'lightgreen', side: THREE.DoubleSide});
 const fieldMesh = new THREE.Mesh(fieldGeo, fieldMat);
@@ -38,7 +45,7 @@ scene.add( fieldMesh );
 fieldMesh.receiveShadow = true;
 fieldMesh.rotation.x = .5 * Math.PI;
 
-fieldMesh.position.set(-200, 0, -200);
+fieldMesh.position.y = -5;
 
 const sphere = new THREE.SphereGeometry(5, 15, 10);
 const material = new THREE.MeshStandardMaterial({color: '#cf1657'});
@@ -46,7 +53,7 @@ const drone = new THREE.Mesh(sphere, material);
 scene.add(drone);
 drone.castShadow = true;
 
-drone.position.set(-200, 5, -200);
+// drone.position.set(-200, 5, -200);
 
 const loader = new GLTFLoader();
 
@@ -62,8 +69,7 @@ loader.load( './models/arena.glb', ( glb ) => {
 		}
 	});
 
-	arena.position.z = -50;
-	arena.position.y = 20;
+	arena.position.set(-200, 15, -250);
 	arena.rotation.x = .09;
 	arena.rotation.y = 0.15;
 	arena.rotation.z = -.03;
@@ -77,16 +83,21 @@ loader.load( './models/arena.glb', ( glb ) => {
 
 } );
 
-let step = 0;
-let speed = .05;
+// we need a way to fetch x number of drone trajectories.
+fetch('./sample_data/2_Drones_Up_Down/drones/Drone 2/trajectory.json')
+	.then(response => response.json())
+	.then(data => {
+		initializeTrajectory(data);
+	});
 
 function animate() {
 	requestAnimationFrame( animate );
 
-	renderer.render( scene, camera );
+	if (showState.playing) {
+		show_animation(drone);
+	}
 
-	step += speed;
-	drone.position.y = 50 * Math.abs(Math.sin(step));
+	renderer.render( scene, camera );
 }
 
 window.addEventListener( 'resize', onWindowResize );
@@ -98,10 +109,12 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-renderGUI(drone);
+renderGUI(drone, showState);
 
 helpers(scene, Dlight);
 
 controls(camera, renderer);
+
+show_animation(drone);
 
 animate();

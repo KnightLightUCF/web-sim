@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "settings": {
+    "cues": {
+      "$ref": "./cues.json"
+    },
+    "validation": {
+      "maxAltitude": 150.0,
+      "maxVelocityXY": 10.0,
+      "maxVelocityZ": 2.0,
+      "minDistance": 3.0
+    }
+  },
+  "swarm": {
+    "drones": [
+      {
+        "type": "generic",
+        "settings": {
+          "trajectory": {
+            "$ref": "./drones/Drone 1/trajectory.json#"
+          },
+          "lights": {
+            "$ref": "./drones/Drone 1/lights.json#"
+          },
+          "home": [
+            -1.5,
+            0.0,
+            0.0
+          ],
+          "landAt": [
+            -1.5,
+            0.0,
+            0.0
+          ],
+          "name": "Drone 1"
+        }
+      },
+      {
+        "type": "generic",
+        "settings": {
+          "trajectory": {
+            "$ref": "./drones/Drone 2/trajectory.json#"
+          },
+          "lights": {
+            "$ref": "./drones/Drone 2/lights.json#"
+          },
+          "home": [
+            1.5,
+            0.0,
+            0.0
+          ],
+          "landAt": [
+            1.5,
+            0.0,
+            0.0
+          ],
+          "name": "Drone 2"
+        }
+      }
+    ]
+  },
+  "environment": {
+    "type": "outdoor"
+  },
+  "meta": {
+    "title": "2_Drones_Up_Down"
+  },
+  "media": {}
+}

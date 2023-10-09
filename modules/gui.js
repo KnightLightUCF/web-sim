@@ -1,13 +1,14 @@
 import * as DAT from 'dat.gui';
 
-function renderGUI(drone) {
+function renderGUI(drone, showState) {
 	const gui = new DAT.GUI();
 
 	const options = {
 		sphereColor: '#5a82ff',
 		x: 0,
 		y: 0,
-		z: 0
+		z: 0,
+		Play: false
 	};
 	
 	gui.add(options, 'x', -150, 150).onChange(function(e){
@@ -27,6 +28,11 @@ function renderGUI(drone) {
 			drone.material.color.set(e);
 		}
 	);
+
+	gui.add(options, 'Play', true, false).onChange((e)=> {
+		console.log(e);
+		return showState.playing = e;
+	});
 }
 
 export default renderGUI;
