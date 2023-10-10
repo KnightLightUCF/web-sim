@@ -3,6 +3,8 @@ import * as DAT from 'dat.gui';
 function renderGUI(drone, showState, files, setCurrentFile) {
 	const gui = new DAT.GUI();
 
+	let playController;  // Define a variable for the checkbox controller
+
 	const options = {
 		sphereColor: '#cf1657',
 		x: 0,
@@ -39,6 +41,13 @@ function renderGUI(drone, showState, files, setCurrentFile) {
             setCurrentFile(selectedFile);
         });
     }
+
+	// Space bar play and stop functionality
+    playController = gui.add(options, 'Play', true, false).onChange((e)=> {
+        return showState.playing = e;
+    });
+
+	return playController;
 }
 
 export default renderGUI;

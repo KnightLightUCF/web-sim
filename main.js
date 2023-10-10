@@ -88,12 +88,15 @@ let currentFile = null;
 
 let drone_list;
 
+// For space bar functionality
+let playController;
+
 fetch('./sample_data/fileList.json')
     .then(response => response.json())
     .then(data => {
         fileList = data.files;
         currentFile = fileList[0];
-        renderGUI(drone, showState, fileList, setCurrentFile);
+        playController = renderGUI(drone, showState, fileList, setCurrentFile);
         return drone_list = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
     })
     .catch(error => console.error("File list error:", error));
@@ -127,6 +130,14 @@ function onWindowResize() {
 
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
+
+// Add an event listener for the space bar keydown event
+document.addEventListener('keydown', (event) => {
+    if (event.code === "Space") {  // Check if the pressed key is the space bar
+        showState.playing = !showState.playing;  // Toggle the playing state
+        playController.setValue(showState.playing);  // Update the checkbox
+    }
+});
 
 helpers(scene, Dlight);
 
