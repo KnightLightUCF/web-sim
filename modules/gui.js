@@ -31,7 +31,8 @@ function renderGUI(drone, showState, files, setCurrentFile) {
 		}
 	);
 
-	gui.add(options, 'Play', true, false).onChange((e)=> {
+	// Space bar play and stop functionality
+	playController = gui.add(options, 'Play', true, false).onChange((e)=> {
 		return showState.playing = e;
 	});
 
@@ -41,11 +42,6 @@ function renderGUI(drone, showState, files, setCurrentFile) {
             setCurrentFile(selectedFile);
         });
     }
-
-	// Space bar play and stop functionality
-    playController = gui.add(options, 'Play', true, false).onChange((e)=> {
-        return showState.playing = e;
-    });
 
 	return playController;
 }
