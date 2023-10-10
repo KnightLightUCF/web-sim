@@ -2,9 +2,9 @@ import {initializeTrajectory} from './show_animation';
 
 function ParseSkyc(file, scene, drone) {
 	let droneNames = [];
-	const drones = [];
+	let drones = [];
 
-	// The NEW new import method
+	// Dynamic import
 	fetch(file)
 		.then(response => response.blob())
 		.then(blob => {
@@ -14,6 +14,7 @@ function ParseSkyc(file, scene, drone) {
 		.then(zip => {
 			// Fetching the list of drone names from the directory structure
 			droneNames = Object.keys(zip.files).filter(file => file.startsWith('drones/Drone')).map(file => file.split('/')[1]);
+
 			// Fetching trajectories for all drones
 			const promises = droneNames.map(name => zip.file(`drones/${name}/trajectory.json`).async('string'));
 
