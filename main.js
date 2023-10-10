@@ -45,12 +45,12 @@ scene.add( fieldMesh );
 fieldMesh.receiveShadow = true;
 fieldMesh.rotation.x = .5 * Math.PI;
 
-fieldMesh.position.y = -5;
+fieldMesh.position.y = -1;
 
-const sphere = new THREE.SphereGeometry(5, 15, 10);
+const sphere = new THREE.SphereGeometry(1, 15, 10);
 const material = new THREE.MeshStandardMaterial({color: '#cf1657'});
 const drone = new THREE.Mesh(sphere, material);
-scene.add(drone);
+// scene.add(drone);
 drone.castShadow = true;
 
 // drone.position.set(-200, 5, -200);
@@ -83,14 +83,18 @@ loader.load( './models/arena.glb', ( glb ) => {
 
 } );
 
-// we need a way to fetch x number of drone trajectories. <just wait for the next commit 😉>
+// we need a way to fetch x number of drone trajectories. <it's done 😁>
 // fetch('./sample_data/2_Drones_Up_Down/drones/Drone 1/trajectory.json')
 // 	.then(response => response.json())
 // 	.then(data => {
 // 		initializeTrajectory(data);
 // 	});
 
-// New import method
+const drones = [];
+
+let droneNames = [];
+
+// The NEW new import method
 fetch('./sample_data/2_Drones_Up_Down.skyc')
     .then(response => response.blob())
     .then(blob => {
@@ -98,16 +102,42 @@ fetch('./sample_data/2_Drones_Up_Down.skyc')
         return jszip.loadAsync(blob);
     })
     .then(zip => {
-        // Path to the desired file
-        const filePath = 'drones/Drone 1/trajectory.json';
-		// Get file contents as a string
-        return zip.file(filePath).async('string');
+        // Fetching the list of drone names from the directory structure
+        droneNames = Object.keys(zip.files).filter(file => file.startsWith("drones/Drone")).map(file => file.split('/')[1]);
+        
+        // Fetching trajectories for all drones
+        const promises = droneNames.map(name => zip.file(`drones/${name}/trajectory.json`).async('string'));
+
+        return Promise.all(promises);
     })
-    .then(data => {
-		// Convert string data to JSON
-        const jsonData = JSON.parse(data);
-		// Call initializeTrajectory
-        initializeTrajectory(jsonData);
+    .then(datas => {
+		datas.forEach((data, index) => {
+			// Convert string data to JSON
+			const jsonData = JSON.parse(data);
+
+			// Create the sphere (drone)
+			const droneMesh = drone.clone();
+
+			// Set the drone's initial coordinates based off it's trajectory.json
+			const initialPosition = jsonData.points[0][1];
+			droneMesh.position.set(initialPosition[0], initialPosition[2], initialPosition[1]);
+		
+			// Initialize drone's trajectory data
+			droneMesh.trajectoryData = {
+				curves: [],
+				currentCurveIndex: 0,
+				curveProgress: 0
+			};
+
+			// Add to drones array
+			drones.push(droneMesh);
+			
+			// Add drone to the scene
+			scene.add(droneMesh);
+
+			// Call initializeTrajectory
+			initializeTrajectory(jsonData, droneMesh);
+		});
     })
     .catch(error => {
 		// We won't make errors, but just incase
@@ -118,7 +148,7 @@ function animate() {
 	requestAnimationFrame( animate );
 
 	if (showState.playing) {
-		show_animation(drone);
+		show_animation(drones);
 	}
 
 	renderer.render( scene, camera );
@@ -133,12 +163,12 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-renderGUI(drone, showState);
+renderGUI(drones, showState);
 
 helpers(scene, Dlight);
 
 controls(camera, renderer);
 
-show_animation(drone);
+show_animation(drones);
 
 animate();
