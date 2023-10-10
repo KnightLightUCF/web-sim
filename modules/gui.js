@@ -1,6 +1,6 @@
 import * as DAT from 'dat.gui';
 
-function renderGUI(drone, showState) {
+function renderGUI(drone, showState, files, setCurrentFile) {
 	const gui = new DAT.GUI();
 
 	const options = {
@@ -32,6 +32,13 @@ function renderGUI(drone, showState) {
 	gui.add(options, 'Play', true, false).onChange((e)=> {
 		return showState.playing = e;
 	});
+
+	if (files && files.length) {
+		const fileController = gui.add({file: files[0]}, 'file', files).name('Select File');
+        fileController.onChange(function(selectedFile){
+            setCurrentFile(selectedFile);
+        });
+    }
 }
 
 export default renderGUI;

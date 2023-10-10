@@ -81,7 +81,33 @@ loader.load( './models/arena.glb', ( glb ) => {
 
 } );
 
-let drone_list = ParseSkyc('./sample_data/2_Drones_Up_Down.skyc', scene, drone);
+// List of files
+let fileList = [];
+
+let currentFile = null;
+
+let drone_list;
+
+fetch('./sample_data/fileList.json')
+    .then(response => response.json())
+    .then(data => {
+        fileList = data.files;
+        currentFile = fileList[0];
+        renderGUI(drone, showState, fileList, setCurrentFile);
+        return drone_list = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+    })
+    .catch(error => console.error("File list error:", error));
+
+function setCurrentFile(filename) {
+    currentFile = filename;
+
+    // Remove old drones from the scene
+    drone_list.forEach(oldDrone => {
+        scene.remove(oldDrone);
+    });
+
+    drone_list = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+}
 
 function animate() {
 	requestAnimationFrame( animate );
@@ -101,8 +127,6 @@ function onWindowResize() {
 
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
-
-renderGUI(drone, showState);
 
 helpers(scene, Dlight);
 
