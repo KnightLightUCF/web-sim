@@ -46,6 +46,9 @@ function renderGUI(drone, showState, files, setCurrentFile) {
 		const fileController = gui.add({file: files[0]}, 'file', files).name('Select File');
         fileController.onChange(function(selectedFile){
             setCurrentFile(selectedFile);
+
+			// Remove focus from dropdown so space bar can be pressed to pause or play
+			document.activeElement.blur();
         });
     }
 
