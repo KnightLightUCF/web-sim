@@ -228,11 +228,16 @@ function onWindowResize() {
 
 // Add an event listener for the space bar keydown event
 document.addEventListener('keydown', (event) => {
-    if (event.code === "Space") {  // Check if the pressed key is the space bar
-        showState.playing = !showState.playing;  // Toggle the playing state
-        playController.setValue(showState.playing);  // Update the checkbox
-    }
+	// Check if any GUI control is focused
+	if (event.code === "Space" && !isGUIFocused()) {  // Check if the pressed key is the space bar
+		showState.playing = !showState.playing;  // Toggle the playing state
+		playController.setValue(showState.playing);  // Update the checkbox
+	}
 });
+
+function isGUIFocused() {
+    return document.activeElement && document.activeElement.classList.contains('dg');
+}
 
 helpers(scene, Dlight);
 

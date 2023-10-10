@@ -49,6 +49,16 @@ function renderGUI(drone, showState, files, setCurrentFile) {
         });
     }
 
+	// Prevent double toggling when pressing spacebar over GUI controls
+	const guiContainer = document.querySelector('.dg.main');
+	if (guiContainer) {
+		guiContainer.addEventListener('keydown', (event) => {
+			if (event.code === 'Space') {
+				event.stopPropagation();  // Stop the spacebar event from propagating to other listeners
+			}
+		}, true);
+	}
+
 	return { playController, options };
 }
 
