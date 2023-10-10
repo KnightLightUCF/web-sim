@@ -81,6 +81,74 @@ loader.load( './models/arena.glb', ( glb ) => {
 
 } );
 
+// Start of camera moving with arrow keys and WASD code
+// Move state declaration
+let moveState = {
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+	up: false,
+    down: false
+};
+
+// Keydown event (press)
+document.addEventListener('keydown', (event) => {
+    switch(event.code) {
+        case 'KeyW':
+		case 'ArrowUp':
+            moveState.forward = true;
+            break;
+        case 'KeyS':
+		case 'ArrowDown':
+            moveState.backward = true;
+            break;
+        case 'KeyA':
+		case 'ArrowLeft':
+            moveState.left = true;
+            break;
+        case 'KeyD':
+		case 'ArrowRight':
+            moveState.right = true;
+            break;
+		case 'KeyQ':
+			moveState.up = true;
+			break;
+		case 'KeyE':
+			moveState.down = true;
+			break;
+    }
+});
+
+// Keyup event (stop pressing)
+document.addEventListener('keyup', (event) => {
+    switch(event.code) {
+        case 'KeyW':
+		case 'ArrowUp':
+            moveState.forward = false;
+            break;
+        case 'KeyS':
+		case 'ArrowDown':
+            moveState.backward = false;
+            break;
+        case 'KeyA':
+		case 'ArrowLeft':
+            moveState.left = false;
+            break;
+        case 'KeyD':
+		case 'ArrowRight':
+            moveState.right = false;
+            break;
+		case 'KeyQ':
+			moveState.up = false;
+			break;
+		case 'KeyE':
+			moveState.down = false;
+			break;
+    }
+});
+// End of camera moving with arrow keys and WASD code
+
 // List of files
 let fileList = [];
 
@@ -89,14 +157,20 @@ let currentFile = null;
 let drone_list;
 
 // For space bar functionality
+let guiObjects;
 let playController;
+
+// Camera moving speed
+let guiOptions;
 
 fetch('./sample_data/fileList.json')
     .then(response => response.json())
     .then(data => {
         fileList = data.files;
         currentFile = fileList[0];
-        playController = renderGUI(drone, showState, fileList, setCurrentFile);
+        guiObjects = renderGUI(drone, showState, fileList, setCurrentFile);
+		playController = guiObjects.playController;
+		guiOptions = guiObjects.options;
         return drone_list = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
     })
     .catch(error => console.error("File list error:", error));
@@ -114,7 +188,28 @@ function setCurrentFile(filename) {
 
 function animate() {
 	requestAnimationFrame( animate );
+	
+	// Moving the camera
+    if (moveState.forward) {
+        camera.translateZ(-guiOptions.speed);
+    }
+    if (moveState.backward) {
+        camera.translateZ(guiOptions.speed);
+    }
+    if (moveState.left) {
+        camera.translateX(-guiOptions.speed);
+    }
+    if (moveState.right) {
+        camera.translateX(guiOptions.speed);
+    }
+	if (moveState.up) {
+        camera.translateY(guiOptions.speed);
+    }
+    if (moveState.down) {
+        camera.translateY(-guiOptions.speed);
+    }
 
+	// Pause and Play
 	if (showState.playing) {
 		show_animation(drone_list);
 	}
