@@ -7,6 +7,16 @@ import controls from './modules/controls';
 import {show_animation, initializeTrajectory} from './modules/show_animation';
 import ParseSkyc from './modules/parse';
 
+// Top left statistics
+import Stats from 'stats.js';
+
+// Initialize statistics
+const stats = new Stats();
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.left = '0px';
+stats.domElement.style.top = '0px';
+document.body.appendChild(stats.domElement);
+
 let showState = {
 	playing: false
 };
@@ -213,6 +223,9 @@ function animate() {
 	if (showState.playing) {
 		show_animation(drone_list);
 	}
+
+	// Update statistics
+	stats.update();
 
 	renderer.render( scene, camera );
 }
