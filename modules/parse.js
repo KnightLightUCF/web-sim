@@ -12,8 +12,8 @@ function ParseSkyc(file, scene, drone) {
 			return jszip.loadAsync(blob);
 		})
 		.then(zip => {
-			// Fetching the list of drone names from the directory structure
-			droneNames = Object.keys(zip.files).filter(file => file.startsWith('drones/Drone')).map(file => file.split('/')[1]);
+			// New method: Fetching the list of drone names from the directory structure
+			droneNames = [...new Set(Object.keys(zip.files).filter(file => file.startsWith('drones/Drone')).map(file => file.split('/')[1]))];
 
 			// Fetching trajectories for all drones
 			const promises = droneNames.map(name => zip.file(`drones/${name}/trajectory.json`).async('string'));
