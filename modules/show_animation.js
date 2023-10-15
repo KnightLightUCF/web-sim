@@ -60,6 +60,8 @@ function show_animation(drones) {
 			// The drone has completed its trajectory, reset its position and progress
 			data.currentCurveIndex = 0;
 			data.curveProgress = 0;
+			// drone.lightData.currentLightStep = 0;
+			// // drone.lightData.lightChangeTimestamp = Date.now();
 		}
 	});
 }
