@@ -7,6 +7,9 @@ import controls from './modules/controls';
 import {show_animation, initializeTrajectory} from './modules/show_animation';
 import ParseSkyc from './modules/parse';
 
+// Keyboard controls
+import { moveState, initKeyboardControls } from './modules/keyboardControls';
+
 // Top left statistics
 import Stats from 'stats.js';
 
@@ -90,74 +93,6 @@ loader.load( './models/arena.glb', ( glb ) => {
 	console.error( error );
 
 } );
-
-// Start of camera moving with arrow keys and WASD code
-// Move state declaration
-let moveState = {
-    forward: false,
-    backward: false,
-    left: false,
-    right: false,
-	up: false,
-    down: false
-};
-
-// Keydown event (press)
-document.addEventListener('keydown', (event) => {
-    switch(event.code) {
-        case 'KeyW':
-		case 'ArrowUp':
-            moveState.forward = true;
-            break;
-        case 'KeyS':
-		case 'ArrowDown':
-            moveState.backward = true;
-            break;
-        case 'KeyA':
-		case 'ArrowLeft':
-            moveState.left = true;
-            break;
-        case 'KeyD':
-		case 'ArrowRight':
-            moveState.right = true;
-            break;
-		case 'KeyQ':
-			moveState.up = true;
-			break;
-		case 'KeyE':
-			moveState.down = true;
-			break;
-    }
-});
-
-// Keyup event (stop pressing)
-document.addEventListener('keyup', (event) => {
-    switch(event.code) {
-        case 'KeyW':
-		case 'ArrowUp':
-            moveState.forward = false;
-            break;
-        case 'KeyS':
-		case 'ArrowDown':
-            moveState.backward = false;
-            break;
-        case 'KeyA':
-		case 'ArrowLeft':
-            moveState.left = false;
-            break;
-        case 'KeyD':
-		case 'ArrowRight':
-            moveState.right = false;
-            break;
-		case 'KeyQ':
-			moveState.up = false;
-			break;
-		case 'KeyE':
-			moveState.down = false;
-			break;
-    }
-});
-// End of camera moving with arrow keys and WASD code
 
 // List of files
 let fileList = [];
@@ -255,5 +190,8 @@ function isGUIFocused() {
 helpers(scene, Dlight);
 
 controls(camera, renderer);
+
+// Initialize keyboard controls
+initKeyboardControls();
 
 animate();
