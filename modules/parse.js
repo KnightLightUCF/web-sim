@@ -3,6 +3,7 @@ import {initializeTrajectory} from './show_animation';
 function ParseSkyc(file, scene, drone) {
 	let droneNames = [];
 	let drones = [];
+	let maxLandingTime = 0;  // Track the latest landing time among all drones
 
 	// Dynamic import
 	fetch(file)
@@ -25,6 +26,11 @@ function ParseSkyc(file, scene, drone) {
 				// Convert string data to JSON
 				const jsonData = JSON.parse(data);
 
+				// Track the maximum landing time
+				if (jsonData.landingTime > maxLandingTime) {
+					maxLandingTime = jsonData.landingTime;
+				}
+
 				// Create the sphere (drone)
 				const droneMesh = drone.clone();
 	
@@ -35,9 +41,16 @@ function ParseSkyc(file, scene, drone) {
 				// Initialize drone's trajectory data
 				droneMesh.trajectoryData = {
 					curves: [],
+					durations: [],
 					currentCurveIndex: 0,
 					curveProgress: 0
 				};
+
+				// Compute durations
+				for (let i = 1; i < jsonData.points.length; i++) {
+					const duration = jsonData.points[i][0] - jsonData.points[i - 1][0];
+					droneMesh.trajectoryData.durations.push(duration);
+				}
 
 				// Add to drones array
 				drones.push(droneMesh);
@@ -53,7 +66,9 @@ function ParseSkyc(file, scene, drone) {
 			// We won't make errors, but just incase
 			console.error('File processing error:', error);
 		});
-	return drones;
+	// return drones;
+	// Make maxLandingTime accessible outside this function. One way is to return it.
+	return { drones, maxLandingTime };
 }
 
 export default ParseSkyc;

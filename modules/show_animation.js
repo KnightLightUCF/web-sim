@@ -1,8 +1,5 @@
 import * as THREE from 'three';
 
-// Adjust the speed of the show
-const deltaTime = 0.01;
-
 function initializeTrajectory(trajectoryData, drone) {
 	// Loop through each point in the trajectory data (excluding the last one)
 	for (let i = 0; i < trajectoryData.points.length - 1; i++) {
@@ -31,37 +28,50 @@ function initializeTrajectory(trajectoryData, drone) {
 	}
 }
 
-// Animate the movement of drones along their defined trajectories
-function show_animation(drones) {
-	// Iterate over each drone to update its position
-	drones.forEach((drone, index) => {
-		const data = drone.trajectoryData;
+function show_animation(drones, stopwatch, stopConditionTime) {
+    let allDronesCompleted = true;
 
-		// Check if the drone hasn't completed its trajectory
-		if (data.currentCurveIndex < data.curves.length) {
-			// Current curve the drone is following
-			const currentCurve = data.curves[data.currentCurveIndex];
-			// Get the drone's position on the curve based on its progress
-			const point = currentCurve.getPoint(data.curveProgress);
+    // Global time since the animation started
+    const globalTime = stopwatch.getTime();
 
-			// Update the drone's position
-			drone.position.copy(point);
+    drones.forEach((drone) => {
+        const data = drone.trajectoryData;
 
-			// Increment the progress along the curve by the time delta
-			data.curveProgress += deltaTime;
+        if (!data.completed && data.currentCurveIndex < data.curves.length) {
+            allDronesCompleted = false; // At least one drone is still in action
 
-			// Check if the drone has reached or passed the end of the current curve
-			if (data.curveProgress >= 1) {
-				// Move to the next curve and reset progress
-				data.currentCurveIndex++;
-				data.curveProgress = 0;
-			}
-		} else {
-			// The drone has completed its trajectory, reset its position and progress
-			data.currentCurveIndex = 0;
-			data.curveProgress = 0;
-		}
-	});
+            const currentCurve = data.curves[data.currentCurveIndex];
+            const curveDuration = data.durations[data.currentCurveIndex] * 1000;  // Convert to ms
+            const curveStartTime = data.currentCurveIndex === 0 ? 0 : data.durations.slice(0, data.currentCurveIndex).reduce((a, b) => a + b) * 1000;  // Convert to ms
+            
+            // Calculate normalized progress (from 0 to 1) based on global time and curve's duration and start time
+            data.curveProgress = (globalTime - curveStartTime) / curveDuration;
+            
+            const point = currentCurve.getPoint(data.curveProgress);
+            drone.position.copy(point);
+
+            if (data.curveProgress >= 1) {
+                data.currentCurveIndex++;
+                data.curveProgress = 0;
+            }
+        } else if (!data.completed) {
+            data.completed = true;
+        }
+    });
+
+    if (allDronesCompleted) {
+        if (stopwatch && globalTime >= stopConditionTime) {
+            drones.forEach(drone => {
+                drone.trajectoryData.currentCurveIndex = 0;
+                drone.trajectoryData.curveProgress = 0;
+                drone.trajectoryData.completed = false;
+            });
+
+            stopwatch.stop();
+            stopwatch.reset();
+            stopwatch.start();
+        }
+    }
 }
 
 export {show_animation, initializeTrajectory};
