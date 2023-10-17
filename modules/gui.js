@@ -1,6 +1,6 @@
 import * as DAT from 'dat.gui';
 
-function renderGUI(drone, showState, files, setCurrentFile) {
+function renderGUI(drone, showState, files, setCurrentFile, stopwatch) {
 	const gui = new DAT.GUI();
 
 	let playController;  // Define a variable for the checkbox controller
@@ -11,7 +11,10 @@ function renderGUI(drone, showState, files, setCurrentFile) {
 		y: 0,
 		z: 0,
 		Play: false,
-		speed: 2
+		speed: 2,
+		timerOptions: {
+			time: "00:00.000"
+		}
 	};
 
 	gui.add(options, 'x', -150, 150).onChange(function(e){
@@ -38,7 +41,12 @@ function renderGUI(drone, showState, files, setCurrentFile) {
 
 	// Space bar play and stop functionality
 	playController = gui.add(options, 'Play', true, false).onChange((e)=> {
-		return showState.playing = e;
+		showState.playing = e;
+		if (showState.playing) {
+			stopwatch.start();
+		} else {
+			stopwatch.stop();
+		}
 	});
 
 	// .skyc file dropdown
@@ -51,6 +59,10 @@ function renderGUI(drone, showState, files, setCurrentFile) {
 			document.activeElement.blur();
         });
     }
+    
+	let timerController = gui.add(options.timerOptions, 'time').name('Timer').listen();
+	let timerDomElement = timerController.domElement;
+	timerDomElement.style.pointerEvents = "none";
 
 	// Prevent double toggling when pressing spacebar over GUI controls
 	const guiContainer = document.querySelector('.dg.main');

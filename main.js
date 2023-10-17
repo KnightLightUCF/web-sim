@@ -7,6 +7,7 @@ import renderGUI from './modules/gui';
 import helpers from './modules/helpers';
 import controls from './modules/controls';
 import {show_animation, initializeTrajectory} from './modules/show_animation';
+import {updateDroneLighting} from './modules/show_lighting'
 import ParseSkyc from './modules/parse';
 
 // Scene initialization
@@ -28,6 +29,12 @@ document.body.appendChild(stats.domElement);
 let showState = {
 	playing: false
 };
+
+import { Stopwatch } from './modules/stopwatch';
+
+let stopwatch = new Stopwatch();
+
+let stopConditionTime = 0;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 5000 );
@@ -64,22 +71,40 @@ fetch('./sample_data/fileList.json')
     .then(data => {
         fileList = data.files;
         currentFile = fileList[0];
-        guiObjects = renderGUI(drone, showState, fileList, setCurrentFile);
-		playController = guiObjects.playController;
-		guiOptions = guiObjects.options;
-        return drone_list = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+        guiObjects = renderGUI(drone, showState, fileList, setCurrentFile, stopwatch);
+        playController = guiObjects.playController;
+        guiOptions = guiObjects.options;
+        
+        const result = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+        drone_list = result.drones;
+        stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
+
+        return drone_list;
     })
     .catch(error => console.error("File list error:", error));
 
 function setCurrentFile(filename) {
     currentFile = filename;
 
-    // Remove old drones from the scene
+    // 1. Reset the stopwatch
+    if (stopwatch) {
+        stopwatch.stop();
+        stopwatch.reset();
+        guiOptions.timerOptions.time = "00:00.000";
+    }
+
+    // 2. Remove old drones from the scene
     drone_list.forEach(oldDrone => {
         scene.remove(oldDrone);
     });
 
-    drone_list = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+    const result = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+    drone_list = result.drones;
+    stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
+
+    if (stopwatch && showState.playing) {
+        stopwatch.start();
+    }
 }
 
 function animate() {
@@ -107,7 +132,14 @@ function animate() {
 
 	// Pause and Play
 	if (showState.playing) {
-		show_animation(drone_list);
+        show_animation(drone_list, stopwatch, stopConditionTime);
+        updateDroneLighting(drone_list, stopwatch);
+        let time = stopwatch.getTime();
+        let minutes = Math.floor(time / 60000);
+        let seconds = Math.floor((time % 60000) / 1000);
+        let milliseconds = time % 1000;
+        let formattedTime = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds + ":" + ("00" + milliseconds).slice(-3);
+        guiOptions.timerOptions.time = formattedTime;
 	}
 
 	// Update statistics
@@ -131,6 +163,11 @@ document.addEventListener('keydown', (event) => {
 	if (event.code === "Space" && !isGUIFocused()) {  // Check if the pressed key is the space bar
 		showState.playing = !showState.playing;  // Toggle the playing state
 		playController.setValue(showState.playing);  // Update the checkbox
+        if (showState.playing) {
+            stopwatch.start();
+        } else {
+            stopwatch.stop();
+        }
 	}
 });
 
