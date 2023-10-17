@@ -102,7 +102,7 @@ function setCurrentFile(filename) {
     drone_list = result.drones;
     stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
 
-    if (stopwatch) {
+    if (stopwatch && showState.playing) {
         stopwatch.start();
     }
 }
