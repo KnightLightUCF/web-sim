@@ -7,6 +7,7 @@ import renderGUI from './modules/gui';
 import helpers from './modules/helpers';
 import controls from './modules/controls';
 import {show_animation, initializeTrajectory} from './modules/show_animation';
+import {updateDroneLighting} from './modules/show_lighting'
 import ParseSkyc from './modules/parse';
 
 // Scene initialization
@@ -132,6 +133,7 @@ function animate() {
 	// Pause and Play
 	if (showState.playing) {
         show_animation(drone_list, stopwatch, stopConditionTime);
+        updateDroneLighting(drone_list, stopwatch);
         let time = stopwatch.getTime();
         let minutes = Math.floor(time / 60000);
         let seconds = Math.floor((time % 60000) / 1000);
