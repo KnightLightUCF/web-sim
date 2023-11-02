@@ -2,13 +2,13 @@ import {initializeTrajectory} from './show_animation';
 import {convertLightData} from './lightDataConversion';
 import * as THREE from 'three';
 
-async function ParseSkyc(file, scene, drone) {
+function ParseSkyc(file, scene, drone) {
 	let droneNames = [];
 	let drones = [];
 	let maxLandingTime = 0;  // Track the latest landing time among all drones
 
 	// Dynamic import
-	await fetch(file)
+	fetch(file)
 		.then(response => response.blob())
 		.then(blob => {
 			const jszip = new JSZip();
