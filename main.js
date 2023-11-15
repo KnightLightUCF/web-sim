@@ -83,6 +83,18 @@ function changeCameraView(selectedViewName) {
     let selectedView = predefinedViews.find(view => view.name === selectedViewName);
     if (!selectedView) return;
 
+        // Create tweens for position and rotation
+        new TWEEN.Tween(camera.position)
+        .to({ x: selectedView.position.x, y: selectedView.position.y, z: selectedView.position.z }, 1000) // 2-3 seconds
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .start();
+
+    const targetQuaternion = new THREE.Quaternion().setFromEuler(selectedView.rotation);
+    new TWEEN.Tween(camera.quaternion)
+        .to({ x: targetQuaternion.x, y: targetQuaternion.y, z: targetQuaternion.z, w: targetQuaternion.w }, 1000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .start();
+
     changeView(selectedView.position, selectedView.rotation);
 }
 
@@ -94,14 +106,30 @@ function focusOnDrones() {
     center.divideScalar(drone_list.length);
 
     // Check if the camera's height is below 30
-    if (camera.position.y < 30) {
-        camera.position.setY(30);  // Set the height to 10
-    }
+    // if (camera.position.y < 30) {
+    //     camera.position.setY(30);  // Set the height to 10
+    // }
 
-    // Rotate the camera to look at the center position
-    camera.lookAt(center);
-    controls.target.copy(center);
-    controls.update();
+    // Clone the current camera to avoid modifying the actual camera
+    let cloneCamera = camera.clone();
+    cloneCamera.lookAt(center);
+
+    const targetQuaternion = cloneCamera.quaternion;
+
+    new TWEEN.Tween(camera.quaternion)
+        .to({ 
+            x: targetQuaternion.x, 
+            y: targetQuaternion.y, 
+            z: targetQuaternion.z, 
+            w: targetQuaternion.w 
+        }, 700)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => {
+            // Update the OrbitControls target
+            controls.target.copy(center);
+            controls.update();
+        })
+        .start();
 }
 
 fetch('./sample_data/fileList.json')
@@ -148,6 +176,9 @@ async function setCurrentFile(filename) {
 function animate() {
 	requestAnimationFrame( animate );
 	
+    // Smooth transitions update
+    TWEEN.update();
+
 	// Moving the camera
     if (moveState.forward) {
         camera.translateZ(-guiOptions.speed);
