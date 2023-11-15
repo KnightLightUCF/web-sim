@@ -30,6 +30,9 @@ let showState = {
 	playing: false
 };
 
+// The minimum height for the camera
+const MIN_HEIGHT = 0;
+
 import { Stopwatch } from './modules/stopwatch';
 
 let stopwatch = new Stopwatch();
@@ -128,6 +131,11 @@ function animate() {
     }
     if (moveState.down) {
         camera.translateY(-guiOptions.speed);
+    }
+
+    // Constrain camera's Y position
+    if (camera.position.y < MIN_HEIGHT) {
+        camera.position.y = MIN_HEIGHT;
     }
 
 	// Pause and Play
