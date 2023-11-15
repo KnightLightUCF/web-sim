@@ -68,14 +68,14 @@ let guiOptions;
 
 fetch('./sample_data/fileList.json')
     .then(response => response.json())
-    .then(data => {
+    .then(async data => {
         fileList = data.files;
         currentFile = fileList[0];
         guiObjects = renderGUI(drone, showState, fileList, setCurrentFile, stopwatch);
         playController = guiObjects.playController;
         guiOptions = guiObjects.options;
         
-        const result = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+        const result = await ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
         drone_list = result.drones;
         stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
 
@@ -83,7 +83,7 @@ fetch('./sample_data/fileList.json')
     })
     .catch(error => console.error("File list error:", error));
 
-function setCurrentFile(filename) {
+async function setCurrentFile(filename) {
     currentFile = filename;
 
     // 1. Reset the stopwatch
@@ -98,7 +98,7 @@ function setCurrentFile(filename) {
         scene.remove(oldDrone);
     });
 
-    const result = ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
+    const result = await ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
     drone_list = result.drones;
     stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
 
