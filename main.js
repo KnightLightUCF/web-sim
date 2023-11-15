@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 import renderGUI from './modules/gui';
 import helpers from './modules/helpers';
-import controls from './modules/controls';
+import initControls from './modules/controls';
 import {show_animation, initializeTrajectory} from './modules/show_animation';
 import {updateDroneLighting} from './modules/show_lighting'
 import ParseSkyc from './modules/parse';
@@ -69,12 +69,29 @@ let playController;
 // Camera moving speed
 let guiOptions;
 
+// Default views (will need to be moved to probably sceneSetup.js and in it's own JSON file in the future once we have multi-scene support)
+const predefinedViews = [
+    { name: "View 1", position: new THREE.Vector3(10, 10, 10), rotation: new THREE.Euler(0, 0, 0, 'XYZ') },
+    { name: "View 2", position: new THREE.Vector3(-10, 10, -10), rotation: new THREE.Euler(0, Math.PI / 2, 0, 'XYZ') },
+    { name: "View 3", position: new THREE.Vector3(-100, 69, -42), rotation: new THREE.Euler(0, Math.PI / 2, 0, 'XYZ') },
+    { name: "View 4", position: new THREE.Vector3(100, 100, 100), rotation: new THREE.Euler(0, 0, 0, 'XYZ') },
+];
+
+const { controls, changeView } = initControls(camera, renderer);
+
+function changeCameraView(selectedViewName) {
+    let selectedView = predefinedViews.find(view => view.name === selectedViewName);
+    if (!selectedView) return;
+
+    changeView(selectedView.position, selectedView.rotation);
+}
+
 fetch('./sample_data/fileList.json')
     .then(response => response.json())
     .then(async data => {
         fileList = data.files;
         currentFile = fileList[0];
-        guiObjects = renderGUI(drone, showState, fileList, setCurrentFile, stopwatch);
+        guiObjects = renderGUI(drone, showState, predefinedViews, fileList, setCurrentFile, stopwatch, changeCameraView);
         playController = guiObjects.playController;
         guiOptions = guiObjects.options;
         
@@ -185,7 +202,8 @@ function isGUIFocused() {
 
 helpers(scene, Dlight);
 
-controls(camera, renderer);
+// controls(camera, renderer);
+controls.update();
 
 // Initialize keyboard controls
 initKeyboardControls();

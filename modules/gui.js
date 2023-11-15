@@ -1,6 +1,6 @@
 import * as DAT from 'dat.gui';
 
-function renderGUI(drone, showState, files, setCurrentFile, stopwatch) {
+function renderGUI(drone, showState, predefinedViews, files, setCurrentFile, stopwatch, onViewChange) {
 	const gui = new DAT.GUI();
 
 	let playController;  // Define a variable for the checkbox controller
@@ -73,6 +73,10 @@ function renderGUI(drone, showState, files, setCurrentFile, stopwatch) {
 			}
 		}, true);
 	}
+	
+	// Default views
+	let cameraOptions = { selectedView: 'View 1' };
+    gui.add(cameraOptions, 'selectedView', predefinedViews.map(f => f.name)).onChange(onViewChange);
 
 	return { playController, options };
 }
