@@ -86,12 +86,30 @@ function changeCameraView(selectedViewName) {
     changeView(selectedView.position, selectedView.rotation);
 }
 
+function focusOnDrones() {
+    if (!drone_list || drone_list.length === 0) return;
+
+    let center = new THREE.Vector3();
+    drone_list.forEach(drone => center.add(drone.position));
+    center.divideScalar(drone_list.length);
+
+    // Check if the camera's height is below 30
+    if (camera.position.y < 30) {
+        camera.position.setY(30);  // Set the height to 10
+    }
+
+    // Rotate the camera to look at the center position
+    camera.lookAt(center);
+    controls.target.copy(center);
+    controls.update();
+}
+
 fetch('./sample_data/fileList.json')
     .then(response => response.json())
     .then(async data => {
         fileList = data.files;
         currentFile = fileList[0];
-        guiObjects = renderGUI(drone, showState, predefinedViews, fileList, setCurrentFile, stopwatch, changeCameraView);
+        guiObjects = renderGUI(drone, showState, predefinedViews, fileList, setCurrentFile, stopwatch, changeCameraView, focusOnDrones);
         playController = guiObjects.playController;
         guiOptions = guiObjects.options;
         
