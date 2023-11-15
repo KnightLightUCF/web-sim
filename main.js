@@ -79,6 +79,62 @@ const predefinedViews = [
 
 const { controls, changeView } = initControls(camera, renderer);
 
+/*
+function getDronesCenter() {
+    if (!drone_list || drone_list.length === 0) return new THREE.Vector3();
+
+    let center = new THREE.Vector3();
+    drone_list.forEach(drone => center.add(drone.position));
+    center.divideScalar(drone_list.length);
+    return center;
+}
+
+function changeCameraView(selectedViewName) {
+    let selectedView = predefinedViews.find(view => view.name === selectedViewName);
+    if (!selectedView) return;
+
+    // Calculate the center position of the drones
+    let center = getDronesCenter();
+
+    // Calculate the target quaternion for the camera to look at the center
+    let cloneCamera = camera.clone();
+    cloneCamera.position.set(selectedView.position.x, selectedView.position.y, selectedView.position.z);
+    cloneCamera.lookAt(center);
+    const targetQuaternion = cloneCamera.quaternion;
+
+    // Create a single tween for both position and rotation
+    new TWEEN.Tween({
+        posX: camera.position.x,
+        posY: camera.position.y,
+        posZ: camera.position.z,
+        quatX: camera.quaternion.x,
+        quatY: camera.quaternion.y,
+        quatZ: camera.quaternion.z,
+        quatW: camera.quaternion.w
+    })
+    .to({
+        posX: selectedView.position.x,
+        posY: selectedView.position.y,
+        posZ: selectedView.position.z,
+        quatX: targetQuaternion.x,
+        quatY: targetQuaternion.y,
+        quatZ: targetQuaternion.z,
+        quatW: targetQuaternion.w
+    }, 3000) // Adjust duration as needed
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .onUpdate(function(obj) {
+        camera.position.set(obj.posX, obj.posY, obj.posZ);
+        camera.quaternion.set(obj.quatX, obj.quatY, obj.quatZ, obj.quatW);
+    })
+    .onComplete(() => {
+        controls.target.copy(center);
+        controls.update();
+    })
+    .start();
+}
+//*/
+
+//*
 function changeCameraView(selectedViewName) {
     let selectedView = predefinedViews.find(view => view.name === selectedViewName);
     if (!selectedView) return;
@@ -97,6 +153,7 @@ function changeCameraView(selectedViewName) {
 
     changeView(selectedView.position, selectedView.rotation);
 }
+//*/
 
 function focusOnDrones() {
     if (!drone_list || drone_list.length === 0) return;
