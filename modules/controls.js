@@ -8,12 +8,12 @@ function initControls(camera, renderer) {
 	controls.update();
 
 	function changeView(position, rotation) {
-        camera.position.copy(position);
-        camera.rotation.copy(rotation);
-        controls.update();
-    }
+		camera.position.copy(position);
+		camera.rotation.copy(rotation);
+		controls.update();
+	}
 
-    return { controls, changeView };
+	return { controls, changeView };
 }
 
 export default initControls;

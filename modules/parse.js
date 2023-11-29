@@ -75,8 +75,8 @@ function ParseSkyc(file, scene, drone) {
 					}
 
 					droneMesh.lightData = {
-					light: new THREE.PointLight(0xffffff, 1, 100),
-					lightingSequence: result.lightingSequence
+						light: new THREE.PointLight(0xffffff, 1, 100),
+						lightingSequence: result.lightingSequence
 					};
 
 					// Set the drone's material color to the first color listed in lightingSequence

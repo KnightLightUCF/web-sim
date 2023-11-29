@@ -1,43 +1,24 @@
 import * as DAT from 'dat.gui';
+import { SkycZip } from '../sample_data/fileList.json';
 
-function renderGUI(drone, showState, predefinedViews, files, setCurrentFile, stopwatch, onViewChange, onFocusDrones) {
-	const gui = new DAT.GUI();
+const gui = new DAT.GUI();
 
+// this need refractored
+// need to swap this to multiple functions e.g (one for the timer, one for the show selection, one for the views, and so on) current state is a a pain to maintain.
+function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, droneFocus, temp) {
 	let playController;  // Define a variable for the checkbox controller
 
 	const options = {
-		sphereColor: '#cf1657',
-		x: 0,
-		y: 0,
-		z: 0,
 		Play: false,
 		speed: 2,
 		timerOptions: {
-			time: "00:00.000"
+			time: '00:00.000'
 		}
 	};
 
-	gui.add(options, 'x', -150, 150).onChange(function(e){
-		drone.position.setX(e);
-	});
-
-	gui.add(options, 'y', -150, 150).onChange(function(e){
-		drone.position.setY(e);
-	});
-
-	gui.add(options, 'z', -150, 150).onChange(function(e){
-		drone.position.setZ(e);
-	});
-
-	gui.addColor(options, 'sphereColor').onChange(
-		function(e) {
-			drone.material.color.set(e);
-		}
-	);
-
 	// Move speed options (arrows and WASD for camera)
 	const speeds = [1, 2, 3, 4, 5, 10];
-    gui.add(options, 'speed', speeds).name('Speed');
+	gui.add(options, 'speed', speeds).name('Speed');
 
 	// Space bar play and stop functionality
 	playController = gui.add(options, 'Play', true, false).onChange((e)=> {
@@ -50,19 +31,25 @@ function renderGUI(drone, showState, predefinedViews, files, setCurrentFile, sto
 	});
 
 	// .skyc file dropdown
-	if (files && files.length) {
-		const fileController = gui.add({file: files[0]}, 'file', files).name('Select File');
-        fileController.onChange(function(selectedFile){
-            setCurrentFile(selectedFile);
+	if (SkycZip && SkycZip.length) {
+		const fileController = gui.add({file: SkycZip[0]}, 'file', SkycZip).name('Select File');
+		fileController.onChange(function(selectedFile){
+
+			if (stopwatch) {
+				stopwatch.stop();
+				stopwatch.reset();
+				options.timerOptions.time = '00:00.000';
+			}
+			temp(selectedFile);
 
 			// Remove focus from dropdown so space bar can be pressed to pause or play
 			document.activeElement.blur();
-        });
-    }
-    
+		});
+	}
+
 	let timerController = gui.add(options.timerOptions, 'time').name('Timer').listen();
 	let timerDomElement = timerController.domElement;
-	timerDomElement.style.pointerEvents = "none";
+	timerDomElement.style.pointerEvents = 'none';
 
 	// Prevent double toggling when pressing spacebar over GUI controls
 	const guiContainer = document.querySelector('.dg.main');
@@ -75,11 +62,11 @@ function renderGUI(drone, showState, predefinedViews, files, setCurrentFile, sto
 	}
 
 	// Focus on drones button
-	gui.add({ focusOnDrones: onFocusDrones }, 'focusOnDrones').name('Focus on Drones');
+	gui.add({ focusOnDrones: droneFocus }, 'focusOnDrones').name('Focus on Drones');
 
 	// Default views
 	let cameraOptions = { selectedView: 'View 1' };
-    gui.add(cameraOptions, 'selectedView', predefinedViews.map(f => f.name)).onChange(onViewChange);
+	gui.add(cameraOptions, 'selectedView', predefinedViews.map(f => f.name)).onChange(changeCameraView);
 
 	return { playController, options };
 }
