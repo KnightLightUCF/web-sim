@@ -64,9 +64,6 @@ let drone_list;
 // For space bar functionality
 let playController;
 
-// Camera moving speed
-let guiOptions;
-
 // Default views (will need to be moved to probably sceneSetup.js and in it's own JSON file in the future once we have multi-scene support)
 const predefinedViews = [
 	{ name: 'View 1', position: new THREE.Vector3(10, 10, 10), rotation: new THREE.Euler(0, 0, 0, 'XYZ') },
@@ -185,25 +182,12 @@ function focusOnDrones() {
 		.start();
 }
 
-//render initial show
-// pass in new file
-// reset stop watch
-//clean scene
-// fix play controller
-
-// renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, focusOnDrones, temp);
-
-async function temp(show) {
-
-	// if (drone_list) {
-	// 	drone_list.forEach(oldDrone => {
-	// 		scene.remove(oldDrone);
-	// 	});
-	// }
-
-	// guiObjects = renderGUI(drone, showState, predefinedViews, setCurrentFile, stopwatch, changeCameraView, focusOnDrones);
-	// playController = guiObjects.playController;
-	// guiOptions = guiObjects.options;
+async function RenderShow(show) {
+	if (drone_list) {
+		drone_list.forEach(oldDrone => {
+			scene.remove(oldDrone);
+		});
+	}
 
 	const result = await ParseSkyc(`./sample_data/${show}`, scene, drone);
 	drone_list = result.drones;
@@ -215,50 +199,9 @@ async function temp(show) {
 
 	return drone_list;
 }
-temp(SkycZip[0]);
+RenderShow(SkycZip[0]);
 
-// fetch('./sample_data/fileList.json')
-// 	.then(response => response.json())
-// 	.then(async data => {
-// 		fileList = data.files;
-// 		currentFile = fileList[0];
-// 		guiObjects = renderGUI(drone, showState, predefinedViews, fileList, setCurrentFile, stopwatch, changeCameraView, focusOnDrones);
-// 		playController = guiObjects.playController;
-// 		guiOptions = guiObjects.options;
-
-// 		const result = await ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
-// 		drone_list = result.drones;
-// 		stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
-
-// 		return drone_list;
-// 	})
-// 	.catch(error => console.error('File list error:', error));
-
-async function setCurrentFile(filename) {
-	currentFile = filename;
-
-	// 1. Reset the stopwatch
-	// if (stopwatch) {
-	// 	stopwatch.stop();
-	// 	stopwatch.reset();
-	// 	guiOptions.timerOptions.time = '00:00.000';
-	// }
-
-	// 2. Remove old drones from the scene
-	drone_list.forEach(oldDrone => {
-		scene.remove(oldDrone);
-	});
-
-	const result = await ParseSkyc(`./sample_data/${currentFile}`, scene, drone);
-	drone_list = result.drones;
-	stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
-
-	if (stopwatch && showState.playing) {
-		stopwatch.start();
-	}
-}
-
-let guiObjects = renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, focusOnDrones, temp).options;
+let guiObjects = renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, focusOnDrones, RenderShow).options;
 console.log(guiObjects);
 
 function animate() {
@@ -325,7 +268,7 @@ document.addEventListener('keydown', (event) => {
 	// Check if any GUI control is focused
 	if (event.code === 'Space' && !isGUIFocused()) {  // Check if the pressed key is the space bar
 		showState.playing = !showState.playing;  // Toggle the playing state
-		playController.setValue(showState.playing);  // Update the checkbox
+		guiObjects.playController.setValue(showState.playing);  // Update the checkbox
 		if (showState.playing) {
 			stopwatch.start();
 		} else {

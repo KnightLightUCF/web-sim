@@ -6,14 +6,13 @@ const gui = new DAT.GUI();
 // this need refractored
 // need to swap this to multiple functions e.g (one for the timer, one for the show selection, one for the views, and so on) current state is a a pain to maintain.
 function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, droneFocus, temp) {
-	let playController;  // Define a variable for the checkbox controller
-
 	const options = {
 		Play: false,
 		speed: 2,
 		timerOptions: {
 			time: '00:00.000'
-		}
+		},
+		playController: false
 	};
 
 	// Move speed options (arrows and WASD for camera)
@@ -21,7 +20,7 @@ function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraVie
 	gui.add(options, 'speed', speeds).name('Speed');
 
 	// Space bar play and stop functionality
-	playController = gui.add(options, 'Play', true, false).onChange((e)=> {
+	options.playController = gui.add(options, 'Play', true, false).onChange((e)=> {
 		showState.playing = e;
 		if (showState.playing) {
 			stopwatch.start();
@@ -68,7 +67,7 @@ function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraVie
 	let cameraOptions = { selectedView: 'View 1' };
 	gui.add(cameraOptions, 'selectedView', predefinedViews.map(f => f.name)).onChange(changeCameraView);
 
-	return { playController, options };
+	return { options };
 }
 
 export default renderGUI;
