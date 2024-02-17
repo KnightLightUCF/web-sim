@@ -11,6 +11,9 @@ import {updateDroneLighting} from './modules/show_lighting';
 import ParseSkyc from './modules/parse';
 import { SkycZip } from './sample_data/fileList.json';
 
+// spehre
+import Panorama from './modules/panorama';
+
 // Scene initialization
 import { initializeScene } from './modules/sceneSetup';
 
@@ -56,13 +59,7 @@ drone.castShadow = true;
 // Initialize the scene
 const { Dlight } = initializeScene(scene);
 
-// List of files
-let currentFile = null;
-
 let drone_list;
-
-// For space bar functionality
-let playController;
 
 // Default views (will need to be moved to probably sceneSetup.js and in it's own JSON file in the future once we have multi-scene support)
 const predefinedViews = [
@@ -74,7 +71,6 @@ const predefinedViews = [
 
 const { controls, changeView } = initControls(camera, renderer);
 
-//*
 function getDronesCenter() {
 	if (!drone_list || drone_list.length === 0) return new THREE.Vector3();
 
@@ -158,7 +154,7 @@ function focusOnDrones() {
 	// Check if the camera's height is below 30
 	// if (camera.position.y < 30) {
 	//     camera.position.setY(30);  // Set the height to 10
-	// }
+	//}
 
 	// Clone the current camera to avoid modifying the actual camera
 	let cloneCamera = camera.clone();
@@ -167,7 +163,7 @@ function focusOnDrones() {
 	const targetQuaternion = cloneCamera.quaternion;
 
 	new TWEEN.Tween(camera.quaternion)
-		.to({ 
+		.to({
 			x: targetQuaternion.x, 
 			y: targetQuaternion.y, 
 			z: targetQuaternion.z, 
@@ -202,7 +198,15 @@ async function RenderShow(show) {
 RenderShow(SkycZip[0]);
 
 let guiObjects = renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, focusOnDrones, RenderShow).options;
-console.log(guiObjects);
+
+// new implementaion
+const panoMesh = Panorama();
+
+console.log(panoMesh);
+
+scene.add(panoMesh.mesh);
+
+// end imp
 
 function animate() {
 	requestAnimationFrame( animate );
