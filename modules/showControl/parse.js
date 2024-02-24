@@ -1,5 +1,5 @@
 import {initializeTrajectory} from './show_animation';
-import {convertLightData} from './lightDataConversion';
+import {convertLightData} from '../showLights/lightDataConversion';
 import * as THREE from 'three';
 
 function ParseSkyc(file, scene, drone) {

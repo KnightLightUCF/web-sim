@@ -3,9 +3,9 @@ import * as THREE from 'three';
 import renderGUI from './modules/gui';
 import helpers from './modules/helpers';
 import initControls from './modules/controls';
-import {show_animation, initializeTrajectory} from './modules/show_animation';
-import {updateDroneLighting} from './modules/show_lighting';
-import ParseSkyc from './modules/parse';
+import {show_animation, initializeTrajectory} from './modules/showControl/show_animation';
+import {updateDroneLighting} from './modules/showLights/show_lighting';
+import ParseSkyc from './modules/showControl/parse';
 import { SkycZip } from './sample_data/fileList.json';
 
 // Scene initialization
@@ -53,13 +53,7 @@ drone.castShadow = true;
 // Initialize the scene
 const { Dlight } = initializeScene(scene);
 
-// List of files
-let currentFile = null;
-
 let drone_list;
-
-// For space bar functionality
-let playController;
 
 // Default views (will need to be moved to probably sceneSetup.js and in it's own JSON file in the future once we have multi-scene support)
 const predefinedViews = [
@@ -124,26 +118,6 @@ function changeCameraView(selectedViewName) {
 		})
 		.start();
 }
-/*
-function changeCameraView(selectedViewName) {
-	let selectedView = predefinedViews.find(view => view.name === selectedViewName);
-	if (!selectedView) return;
-
-	// Create tweens for position and rotation
-	new TWEEN.Tween(camera.position)
-		.to({ x: selectedView.position.x, y: selectedView.position.y, z: selectedView.position.z }, 1000) // 2-3 seconds
-		.easing(TWEEN.Easing.Quadratic.InOut)
-		.start();
-
-	const targetQuaternion = new THREE.Quaternion().setFromEuler(selectedView.rotation);
-	new TWEEN.Tween(camera.quaternion)
-		.to({ x: targetQuaternion.x, y: targetQuaternion.y, z: targetQuaternion.z, w: targetQuaternion.w }, 1000)
-		.easing(TWEEN.Easing.Quadratic.InOut)
-		.start();
-
-	changeView(selectedView.position, selectedView.rotation);
-}
-//*/
 
 function focusOnDrones() {
 	if (!drone_list || drone_list.length === 0) return;
