@@ -1,8 +1,5 @@
 import * as THREE from 'three';
 
-// Uncomment when loading a GLTF file for the drone, and remember to add const loader = new GLTFLoader();
-// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
 import renderGUI from './modules/gui';
 import helpers from './modules/helpers';
 import initControls from './modules/controls';
