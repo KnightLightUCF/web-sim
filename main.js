@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 
 import renderGUI from './modules/gui';
-import helpers from './modules/helpers';
 import initControls from './modules/controls';
 import {show_animation, initializeTrajectory} from './modules/showControl/show_animation';
 import {updateDroneLighting} from './modules/showLights/show_lighting';
@@ -255,9 +254,6 @@ function isGUIFocused() {
 	return document.activeElement && document.activeElement.classList.contains('dg');
 }
 
-helpers(scene, Dlight);
-
-// controls(camera, renderer);
 controls.update();
 
 // Initialize keyboard controls

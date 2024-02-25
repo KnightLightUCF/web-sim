@@ -23,7 +23,29 @@ export function initializeScene(scene, config) {
 	
 	// Configure other shadow properties if needed
 	scene.add(Dlight);
-	
+
+	// helpers.js
+	const helpersConfig = config.helpers;
+
+	if (helpersConfig.directionalLightHelper) {
+	const DlightHelper = new THREE.DirectionalLightHelper(Dlight, 100);
+	scene.add(DlightHelper);
+	}
+
+	if (helpersConfig.cameraHelper) {
+	const DlightShadowHelper = new THREE.CameraHelper(Dlight.shadow.camera);
+	scene.add(DlightShadowHelper);
+	}
+
+	if (helpersConfig.displayGrids) {
+		const axesHelper = new THREE.AxesHelper(1000);
+		const gridHelperZ = new THREE.GridHelper(1000, 10);
+		gridHelperZ.rotation.x = Math.PI / 2;
+		const gridHelperY = new THREE.GridHelper(1000, 10);
+		
+		scene.add(axesHelper, gridHelperZ, gridHelperY);
+	}
+
 	// Objects setup from config
 	config.objects.forEach(obj => {
 		const geometry = new THREE.PlaneGeometry(...obj.geometry);
@@ -33,10 +55,6 @@ export function initializeScene(scene, config) {
 		mesh.rotation.set(...obj.rotation);
 		mesh.receiveShadow = obj.receiveShadow;
 		scene.add(mesh);
-
-		if (obj.isDroneTakeoffField) {
-		droneTakeoffField = mesh; // Store the mesh if it's marked as a drone takeoff field
-		}
 	});
 
 	// Model loading from config
@@ -53,5 +71,5 @@ export function initializeScene(scene, config) {
 		});
 	});
 
-	return { Dlight, droneTakeoffField };
+	return { Dlight };
 }
