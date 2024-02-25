@@ -40,6 +40,12 @@ let stopConditionTime = 0;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 5000);
 
+import sceneConfig from './scenes/OG.json';
+
+// Initialize the scene with the specified config file
+const { Dlight } = initializeScene(scene, sceneConfig);
+
+
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -49,9 +55,6 @@ const sphere = new THREE.SphereGeometry(1, 15, 10);
 const material = new THREE.MeshStandardMaterial({color: '#cf1657'});
 const drone = new THREE.Mesh(sphere, material);
 drone.castShadow = true;
-
-// Initialize the scene
-const { Dlight } = initializeScene(scene);
 
 let drone_list;
 

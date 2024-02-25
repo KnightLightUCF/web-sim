@@ -1,0 +1,45 @@
+{
+    "light": {
+      "ambient": {"color": 3355443, "intensity": 4},
+      "directional": {
+        "color": 16777215,
+        "intensity": 1,
+        "position": [200, 200, 200],
+        "shadow": {
+          "camera": {
+            "top": 50,
+            "bottom": -50,
+            "right": 50,
+            "left": -50
+          }
+        }
+      }
+    },
+    "objects": [
+      {
+        "type": "plane",
+        "geometry": [100, 100],
+        "material": {"color": "white", "side": "DoubleSide"},
+        "position": [-200, -5, -200],
+        "rotation": [1.5708, 0, 0],
+        "receiveShadow": true
+      },
+      {
+        "type": "plane",
+        "geometry": [200, 200],
+        "material": {"color": "lightgreen", "side": "DoubleSide"},
+        "position": [0, -1, 0],
+        "rotation": [1.5708, 0, 0],
+        "receiveShadow": true
+      }
+    ],
+    "models": [
+      {
+        "path": "./models/arena.glb",
+        "position": [-210, 15, -250],
+        "rotation": [0.10, 0.15, -0.03],
+        "scale": [200, 200, 200]
+      }
+    ]
+  }
+  
