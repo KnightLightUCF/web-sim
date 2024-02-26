@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-export function initializeScene(scene, config) {
+export function initializeScene(scene, config, camera) {
 	// Light setup from config
 	const ambientLightConfig = config.light.ambient;
 	const ambientLight = new THREE.AmbientLight(ambientLightConfig.color, ambientLightConfig.intensity);
@@ -68,5 +68,19 @@ export function initializeScene(scene, config) {
 		});
 	});
 
-	return { Dlight };
+	// Populate the dropdown menu with views from the config
+	const viewsDropdown = document.getElementById('views_dropdown_menu');
+	viewsDropdown.length = 0;
+	config.views.forEach(view => {
+		const option = document.createElement('option');
+		option.value = view.name;
+		option.textContent = view.name;
+		viewsDropdown.appendChild(option);
+	});
+	
+	if (config.views.length > 0) {
+		camera.position.set(config.views[0].position[0], config.views[0].position[1], config.views[0].position[2]);
+	}
+
+	return { Dlight, sceneViews: config.views };
 }

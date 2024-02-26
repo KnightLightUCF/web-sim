@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import renderGUI from './modules/gui';
-import initControls from './modules/controls';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {show_animation, initializeTrajectory} from './modules/showControl/show_animation';
 import {updateDroneLighting} from './modules/showLights/show_lighting';
 import ParseSkyc from './modules/showControl/parse';
@@ -39,16 +39,20 @@ let stopConditionTime = 0;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 5000);
 
-import sceneConfig from './scenes/OG.json';
-
-// Initialize the scene with the specified config file
-const { Dlight } = initializeScene(scene, sceneConfig);
-
 
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+
+import sceneConfig from './scenes/OG.json';
+
+const controls = new OrbitControls( camera, renderer.domElement );
+
+// Initialize the scene with the specified config file
+const { Dlight, sceneViews } = initializeScene(scene, sceneConfig, camera);
+
+controls.update();
 
 const sphere = new THREE.SphereGeometry(1, 15, 10);
 const material = new THREE.MeshStandardMaterial({color: '#cf1657'});
@@ -56,16 +60,6 @@ const drone = new THREE.Mesh(sphere, material);
 drone.castShadow = true;
 
 let drone_list;
-
-// Default views (will need to be moved to probably sceneSetup.js and in it's own JSON file in the future once we have multi-scene support)
-const predefinedViews = [
-	{ name: 'View 1', position: new THREE.Vector3(10, 10, 10), rotation: new THREE.Euler(0, 0, 0, 'XYZ') },
-	{ name: 'View 2', position: new THREE.Vector3(-10, 10, -10), rotation: new THREE.Euler(0, Math.PI / 2, 0, 'XYZ') },
-	{ name: 'View 3', position: new THREE.Vector3(-100, 69, -42), rotation: new THREE.Euler(0, Math.PI / 2, 0, 'XYZ') },
-	{ name: 'View 4', position: new THREE.Vector3(100, 100, 100), rotation: new THREE.Euler(0, 0, 0, 'XYZ') },
-];
-
-const { controls, changeView } = initControls(camera, renderer);
 
 //*
 function getDronesCenter() {
@@ -78,47 +72,48 @@ function getDronesCenter() {
 }
 
 function changeCameraView(selectedViewName) {
-	let selectedView = predefinedViews.find(view => view.name === selectedViewName);
-	if (!selectedView) return;
+	console.log(sceneViews)
+    let selectedView = sceneViews.find(view => view.name === selectedViewName);
+    if (!selectedView) return;
 
-	// Calculate the center position of the drones
-	let center = getDronesCenter();
+    // Calculate the center position of the drones
+    let center = getDronesCenter();
 
-	// Calculate the target quaternion for the camera to look at the center
-	let cloneCamera = camera.clone();
-	cloneCamera.position.set(selectedView.position.x, selectedView.position.y, selectedView.position.z);
-	cloneCamera.lookAt(center);
-	const targetQuaternion = cloneCamera.quaternion;
+    // Calculate the target quaternion for the camera to look at the center
+    let cloneCamera = camera.clone();
+    cloneCamera.position.set(selectedView.position[0], selectedView.position[1], selectedView.position[2]);
+    cloneCamera.lookAt(center);
+    const targetQuaternion = cloneCamera.quaternion;
 
-	// Create a single tween for both position and rotation
-	new TWEEN.Tween({
-		posX: camera.position.x,
-		posY: camera.position.y,
-		posZ: camera.position.z,
-		quatX: camera.quaternion.x,
-		quatY: camera.quaternion.y,
-		quatZ: camera.quaternion.z,
-		quatW: camera.quaternion.w
-	})
-		.to({
-			posX: selectedView.position.x,
-			posY: selectedView.position.y,
-			posZ: selectedView.position.z,
-			quatX: targetQuaternion.x,
-			quatY: targetQuaternion.y,
-			quatZ: targetQuaternion.z,
-			quatW: targetQuaternion.w
-		}, 3000) // Adjust duration as needed
-		.easing(TWEEN.Easing.Quadratic.InOut)
-		.onUpdate(function(obj) {
-			camera.position.set(obj.posX, obj.posY, obj.posZ);
-			camera.quaternion.set(obj.quatX, obj.quatY, obj.quatZ, obj.quatW);
-		})
-		.onComplete(() => {
-			controls.target.copy(center);
-			controls.update();
-		})
-		.start();
+    // Create a single tween for both position and rotation
+    new TWEEN.Tween({
+        posX: camera.position.x,
+        posY: camera.position.y,
+        posZ: camera.position.z,
+        quatX: camera.quaternion.x,
+        quatY: camera.quaternion.y,
+        quatZ: camera.quaternion.z,
+        quatW: camera.quaternion.w
+    })
+    .to({
+        posX: selectedView.position[0],
+        posY: selectedView.position[1],
+        posZ: selectedView.position[2],
+        quatX: targetQuaternion.x,
+        quatY: targetQuaternion.y,
+        quatZ: targetQuaternion.z,
+        quatW: targetQuaternion.w
+    }, 3000) // Adjust duration as needed
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .onUpdate(function(obj) {
+        camera.position.set(obj.posX, obj.posY, obj.posZ);
+        camera.quaternion.set(obj.quatX, obj.quatY, obj.quatZ, obj.quatW);
+    })
+    .onComplete(() => {
+        controls.target.copy(center);
+        controls.update();
+    })
+    .start();
 }
 
 function focusOnDrones() {
@@ -166,6 +161,8 @@ async function RenderShow(show) {
 	drone_list = result.drones;
 	stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
 
+	console.log(stopConditionTime)
+
 	if (stopwatch && showState.playing) {
 		stopwatch.start();
 	}
@@ -174,7 +171,7 @@ async function RenderShow(show) {
 }
 RenderShow(SkycZip[0]);
 
-let guiObjects = renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, focusOnDrones, RenderShow).options;
+let guiObjects = renderGUI(drone, showState, stopwatch, sceneViews, changeCameraView, focusOnDrones, RenderShow).options;
 console.log(guiObjects);
 
 function animate() {
@@ -248,6 +245,11 @@ document.addEventListener('keydown', (event) => {
 			stopwatch.stop();
 		}
 	}
+});
+
+document.getElementById('views_dropdown_menu').addEventListener('change', function(event) {
+	const selectedViewName = event.target.value;
+	changeCameraView(selectedViewName);
 });
 
 function isGUIFocused() {

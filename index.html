@@ -4,11 +4,11 @@
 		<meta charset="utf-8">
 		<title>KnightLight Drone Show</title>
 		<style>
-						body {
-			display: block;
-			height: 100%;
-			margin: 0;
-			padding: 0;
+			body {
+				display: block;
+				height: 100%;
+				margin: 0;
+				padding: 0;
 			}
 			#timeline_div {
 				width: 50vw;
@@ -27,6 +27,18 @@
 				position: absolute;
 				border-radius: 5px;
 			}
+			#views_dropdown_menu {
+				position: absolute;
+				top: 85%;
+				left: calc(25% + 50vw + 10px);
+				background-color: rgba(0, 0, 0, 0.7);
+				border: none;
+				border-radius: 10px;
+				color: white;
+				padding: 10px;
+				font-size: 16px;
+				height: 50px;
+        	}
 		</style>
 		<!-- Dependency for import functionality -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
@@ -36,11 +48,11 @@
 		<script type="module" src="/main.js"></script>
 	</head>
 	<body>
-		<!-- <div id="timeline_div">
+		<div id="timeline_div">
 			<div id="show_progression">
-
 			</div>
-		</div> -->
-
+		</div>
+		<select id="views_dropdown_menu">
+		</select>
 	</body>
 </html>

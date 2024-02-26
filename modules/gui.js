@@ -63,10 +63,6 @@ function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraVie
 	// Focus on drones button
 	gui.add({ focusOnDrones: droneFocus }, 'focusOnDrones').name('Focus on Drones');
 
-	// Default views
-	let cameraOptions = { selectedView: 'View 1' };
-	gui.add(cameraOptions, 'selectedView', predefinedViews.map(f => f.name)).onChange(changeCameraView);
-
 	return { options };
 }
 

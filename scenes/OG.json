@@ -45,6 +45,13 @@
         "rotation": [0.10, 0.15, -0.03],
         "scale": [200, 200, 200]
       }
+    ],
+    "views": [
+      {"name": "Home", "position": [-200, 20, -200], "rotation": [0, 0, 0]},
+      { "name": "View 1", "position": [10, 10, 10], "rotation": [0, 0, 0] },
+      { "name": "View 2", "position": [-10, 10, -10], "rotation": [0, 1.5708, 0] },
+      { "name": "View 3", "position": [-100, 69, -42], "rotation": [0, 1.5708, 0] },
+      { "name": "View 4", "position": [100, 100, 100], "rotation": [0, 0, 0] }
     ]
   }
   
