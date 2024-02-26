@@ -28,21 +28,53 @@ function initializeTrajectory(trajectoryData, drone) {
 	}
 }
 
-function show_animation(drones, stopwatch, stopConditionTime) {
+function show_animation(drones, stopwatch, stopConditionTime, seekTime = null) {
     let allDronesCompleted = true;
 
     // Global time since the animation started
     const globalTime = stopwatch.getTime();
 
+    if (seekTime !== null) {
+        drones.forEach(drone => {
+            const data = drone.trajectoryData;
+    
+            // Reset the state for seeking
+            data.currentCurveIndex = 0;
+            let cumulativeDuration = 0; // Accumulate the durations of passed curves
+    
+            // Find the curve that corresponds to the seek time
+            for (let i = 0; i < data.durations.length; i++) {
+                const curveDuration = data.durations[i] * 1000; // Convert to ms
+                if (cumulativeDuration + curveDuration > seekTime) {
+                    data.currentCurveIndex = i;
+                    // Calculate the progress within the current curve
+                    data.curveProgress = (seekTime - cumulativeDuration) / curveDuration;
+                    break;
+                }
+                cumulativeDuration += curveDuration;
+            }
+    
+            // Update drone's position based on the calculated curve and progress
+            if (data.currentCurveIndex < data.curves.length) {
+                const currentCurve = data.curves[data.currentCurveIndex];
+                const point = currentCurve.getPoint(data.curveProgress);
+                drone.position.copy(point);
+            }
+        });
+    
+        // Exit the function
+        return;
+    }
+
     drones.forEach((drone) => {
         const data = drone.trajectoryData;
 
         if (!data.completed && data.currentCurveIndex < data.curves.length) {
-            allDronesCompleted = false; // At least one drone is still in action
+            allDronesCompleted = false; // At least one drone is still alive
 
             const currentCurve = data.curves[data.currentCurveIndex];
-            const curveDuration = data.durations[data.currentCurveIndex] * 1000;  // Convert to ms
-            const curveStartTime = data.currentCurveIndex === 0 ? 0 : data.durations.slice(0, data.currentCurveIndex).reduce((a, b) => a + b) * 1000;  // Convert to ms
+            const curveDuration = data.durations[data.currentCurveIndex] * 1000;
+            const curveStartTime = data.currentCurveIndex === 0 ? 0 : data.durations.slice(0, data.currentCurveIndex).reduce((a, b) => a + b) * 1000;
             
             // Calculate normalized progress (from 0 to 1) based on global time and curve's duration and start time
             data.curveProgress = (globalTime - curveStartTime) / curveDuration;

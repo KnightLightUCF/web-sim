@@ -152,6 +152,7 @@ function focusOnDrones() {
 
 import { updateTotalDuration, updateProgressBar } from './index.js';
 
+let mainTotalDuration = 10;
 
 async function RenderShow(show) {
 	if (drone_list) {
@@ -167,6 +168,8 @@ async function RenderShow(show) {
 	console.log(stopConditionTime)
 
 	updateTotalDuration(stopConditionTime);
+
+	mainTotalDuration = stopConditionTime;
 
 	if (stopwatch && showState.playing) {
 		stopwatch.start();
@@ -222,8 +225,10 @@ function animate() {
 	// Pause and Play
 	if (showState.playing) {
 		show_animation(drone_list, stopwatch, stopConditionTime);
+		// show_animation(drone_list, stopwatch, stopConditionTime, 5000);
 		updateDroneLighting(drone_list, stopwatch);
 		let time = stopwatch.getTime();
+		console.log(time)
 		let minutes = Math.floor(time / 60000);
 		let seconds = Math.floor((time % 60000) / 1000);
 		let milliseconds = time % 1000;
@@ -286,4 +291,39 @@ document.getElementById('play_pause_btn').addEventListener('click', () => {
 	} else {
 		stopwatch.stop();
 	}
+});
+
+function seekToTime(seekTimeInSeconds) {
+    const wasRunning = stopwatch.running;
+
+	 // Temporarily stop the stopwatch
+    if (wasRunning) {
+        stopwatch.stop();
+    }
+
+    stopwatch.elapsedTime = Math.round(seekTimeInSeconds);
+
+	let time = stopwatch.getTime();
+	let minutes = Math.floor(time / 60000);
+	let seconds = Math.floor((time % 60000) / 1000);
+	let milliseconds = time % 1000;
+	let formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ':' + ('00' + milliseconds).slice(-3);
+	guiObjects.timerOptions.time = formattedTime;
+
+    // Update the animation and progress bar to reflect the seek
+    show_animation(drone_list, stopwatch, stopConditionTime, seekTimeInSeconds);
+    updateProgressBar(stopwatch);
+
+	// Resume stopwach if it was running before
+    if (wasRunning) {
+        stopwatch.start();
+    }
+}
+
+document.getElementById('timeline_div').addEventListener('click', (e) => {
+    const rect = document.getElementById('timeline_div').getBoundingClientRect();
+    const x = e.clientX - rect.left; // Get the x position of the click within the timeline
+    const seekTimeInSeconds = (x / rect.width) * mainTotalDuration; // Calculate the seek time based on the click position
+
+    seekToTime(seekTimeInSeconds);
 });

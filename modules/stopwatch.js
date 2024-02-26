@@ -5,6 +5,7 @@ class Stopwatch {
         this.startTime = 0;
         this.elapsedTime = 0;
         this.running = false;
+        this.timeWarp = 1;
     }
 
     start() {
@@ -30,9 +31,9 @@ class Stopwatch {
 
     getTime() {
         if (this.running) {
-            return Date.now() - this.startTime;
+            return (Date.now() - this.startTime) * Math.abs(this.timeWarp);
         } else {
-            return this.elapsedTime;
+            return this.elapsedTime * Math.abs(this.timeWarp);
         }
     }
 }
