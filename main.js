@@ -150,6 +150,9 @@ function focusOnDrones() {
 		.start();
 }
 
+import { updateTotalDuration, updateProgressBar } from './index.js';
+
+
 async function RenderShow(show) {
 	if (drone_list) {
 		drone_list.forEach(oldDrone => {
@@ -163,6 +166,8 @@ async function RenderShow(show) {
 
 	console.log(stopConditionTime)
 
+	updateTotalDuration(stopConditionTime);
+
 	if (stopwatch && showState.playing) {
 		stopwatch.start();
 	}
@@ -173,6 +178,15 @@ RenderShow(SkycZip[0]);
 
 let guiObjects = renderGUI(drone, showState, stopwatch, sceneViews, changeCameraView, focusOnDrones, RenderShow).options;
 console.log(guiObjects);
+
+
+function animateProgressBar() {
+    if (stopwatch.running) {
+        updateProgressBar(stopwatch); // Pass the necessary arguments if they're not globally accessible
+    }
+    requestAnimationFrame(animateProgressBar);
+}
+
 
 function animate() {
 	requestAnimationFrame( animate );
@@ -213,7 +227,6 @@ function animate() {
 		let minutes = Math.floor(time / 60000);
 		let seconds = Math.floor((time % 60000) / 1000);
 		let milliseconds = time % 1000;
-		console.log(time);
 		let formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ':' + ('00' + milliseconds).slice(-3);
 		guiObjects.timerOptions.time = formattedTime;
 	}
@@ -238,7 +251,6 @@ document.addEventListener('keydown', (event) => {
 	// Check if any GUI control is focused
 	if (event.code === 'Space' && !isGUIFocused()) {  // Check if the pressed key is the space bar
 		showState.playing = !showState.playing;  // Toggle the playing state
-		guiObjects.playController.setValue(showState.playing);  // Update the checkbox
 		if (showState.playing) {
 			stopwatch.start();
 		} else {
@@ -262,3 +274,16 @@ controls.update();
 initKeyboardControls();
 
 animate();
+
+// Start the progress bar animation loop
+animateProgressBar();
+
+document.getElementById('play_pause_btn').addEventListener('click', () => {
+    document.getElementById('play_pause_btn').textContent = showState.playing ? 'Play' : 'Pause';
+	showState.playing = !showState.playing;  // Toggle the playing state
+	if (showState.playing) {
+		stopwatch.start();
+	} else {
+		stopwatch.stop();
+	}
+});

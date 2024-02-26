@@ -1,0 +1,61 @@
+body {
+    display: block;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#timeline_div {
+    width: 50vw;
+    height: 50px;
+    left: 25%;
+    top: 85%;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    position: absolute;
+}
+#show_progression {
+    width: 1%;
+    height: 10px;
+    background-color: rgb(126, 120, 2);
+    bottom: 0;
+    position: absolute;
+    border-radius: 5px;
+}
+#views_dropdown_menu {
+    position: absolute;
+    top: 85%;
+    left: calc(25% + 50vw + 10px);
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    height: 50px;
+}
+
+#hover_time_marker {
+    position: absolute;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#video_controls {
+    position: absolute;
+    top: 91%;
+    left: 41%;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#video_controls button {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}

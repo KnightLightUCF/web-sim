@@ -11,23 +11,12 @@ function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraVie
 		speed: 2,
 		timerOptions: {
 			time: '00:00.000'
-		},
-		playController: false
+		}
 	};
 
 	// Move speed options (arrows and WASD for camera)
 	const speeds = [1, 2, 3, 4, 5, 10];
 	gui.add(options, 'speed', speeds).name('Speed');
-
-	// Space bar play and stop functionality
-	options.playController = gui.add(options, 'Play', true, false).onChange((e)=> {
-		showState.playing = e;
-		if (showState.playing) {
-			stopwatch.start();
-		} else {
-			stopwatch.stop();
-		}
-	});
 
 	// .skyc file dropdown
 	if (SkycZip && SkycZip.length) {
