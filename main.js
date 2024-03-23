@@ -171,6 +171,7 @@ async function RenderShow(show) {
 	updateTotalDuration(stopConditionTime);
 
 	mainTotalDuration = stopConditionTime;
+	updateCirclePosition();
 
 	if (stopwatch && showState.playing) {
 		stopwatch.start();
