@@ -21,18 +21,6 @@ body {
     position: absolute;
     border-radius: 5px;
 }
-#views_dropdown_menu {
-    position: absolute;
-    top: 85%;
-    left: calc(25% + 50vw + 10px);
-    background-color: rgba(0, 0, 0, 0.7);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    padding: 10px;
-    font-size: 16px;
-    height: 50px;
-}
 
 #hover_time_marker {
     position: absolute;
@@ -83,7 +71,7 @@ body {
 }
 
 
-#video_controls {
+/* #video_controls {
     width: 35vw;
     height: 50px;
     position: absolute;
@@ -96,7 +84,19 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
+} */
+
+#video_controls {
+    width: 35vw;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
 }
+
 
 
 .left_controls {
@@ -172,4 +172,27 @@ body {
 .volume_wrapper:focus-within .slider-container {
     width: 105px;
     margin-left: 8px;
+}
+
+/* Views Dropdown Menu (left of the video player) */
+#views_dropdown_menu {
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    height: 50px;
+}
+
+.video-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(35vw + 110px + 12px);
+    gap: 12px;
 }

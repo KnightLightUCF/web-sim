@@ -18,41 +18,43 @@
 			<div id="show_progression"></div>
 			<div id="hover_time_marker" style="display: none;">0s</div>
 		</div>
+		<div class="video-footer">
 
-		<div id="video_controls">
-			<div class="left_controls">
-				<button id="play_pause_btn" class="control_btn">
-					<i class="fa-solid fa-play iconWhite" id="play_icon"></i>
-					<i class="fa-solid fa-pause iconWhite" id="pause_icon" style="display: none;"></i>
-				</button>
-				<!-- <div class="volume_wrapper">
-					<div id="volume_control" class="control_btn">
-						<i class="fa-solid fa-volume-high iconWhite" id="volume_icon"></i>
+			<div id="video_controls">
+				<div class="left_controls">
+					<button id="play_pause_btn" class="control_btn">
+						<i class="fa-solid fa-play iconWhite" id="play_icon"></i>
+						<i class="fa-solid fa-pause iconWhite" id="pause_icon" style="display: none;"></i>
+					</button>
+					<!-- <div class="volume_wrapper">
+						<div id="volume_control" class="control_btn">
+							<i class="fa-solid fa-volume-high iconWhite" id="volume_icon"></i>
+						</div>
+						<div id="volume_slider_container" class="control_btn slider-container">
+							<input type="range" id="volume_slider" min="0" max="100" value="100" class="volume-slider"/>
+						</div>
+					</div> -->
+					<div>
+						<span class="time" id="currentTime">00:00</span>
+						<span class="time">/</span>
+						<span class="time" id="duration">00:00</span>
 					</div>
-					<div id="volume_slider_container" class="control_btn slider-container">
-						<input type="range" id="volume_slider" min="0" max="100" value="100" class="volume-slider"/>
-					</div>
-				</div> -->
-				<div>
-					<span class="time" id="currentTime">00:00</span>
-					<span class="time">/</span>
-					<span class="time" id="duration">00:00</span>
+				</div>
+				<div class="right_controls">
+					<!-- <button id="cc_btn" class="control_btn">
+						<i class="fa-solid fa-closed-captioning iconWhite"></i>
+					</button> -->
+					<button id="settings_btn" class="control_btn">
+						<i class="fa-solid fa-gear iconWhite"></i>
+					</button>
+					<button id="fullscreen_btn" class="control_btn">
+						<i class="fa-solid fa-expand iconWhite" id="expand_icon"></i>
+						<i class="fa-solid fa-compress iconWhite" id="compress_icon" style="display: none;"></i>
+					</button>
 				</div>
 			</div>
-			<div class="right_controls">
-				<!-- <button id="cc_btn" class="control_btn">
-					<i class="fa-solid fa-closed-captioning iconWhite"></i>
-				</button> -->
-				<button id="settings_btn" class="control_btn">
-					<i class="fa-solid fa-gear iconWhite"></i>
-				</button>
-				<button id="fullscreen_btn" class="control_btn">
-					<i class="fa-solid fa-expand iconWhite" id="expand_icon"></i>
-					<i class="fa-solid fa-compress iconWhite" id="compress_icon" style="display: none;"></i>
-				</button>
-			</div>
-		</div>
 
-		<select id="views_dropdown_menu"></select>
+			<select id="views_dropdown_menu"></select>
+		</div>
 	</body>
 </html>
