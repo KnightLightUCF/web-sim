@@ -186,6 +186,8 @@ console.log(guiObjects);
 function animateProgressBar() {
     if (stopwatch.running) {
         updateProgressBar(stopwatch); // Pass the necessary arguments if they're not globally accessible
+		updateCirclePosition();
+		updateDroneLighting(drone_list, stopwatch);
     }
     requestAnimationFrame(animateProgressBar);
 }
@@ -323,6 +325,8 @@ function seekToTime(seekTimeInSeconds) {
     // Update the animation and progress bar to reflect the seek
     show_animation(drone_list, stopwatch, stopConditionTime, seekTimeInSeconds);
     updateProgressBar(stopwatch);
+	updateCirclePosition();
+	updateDroneLighting(drone_list, stopwatch);
 
 	// Resume stopwach if it was running before
     if (wasRunning) {
@@ -330,10 +334,75 @@ function seekToTime(seekTimeInSeconds) {
     }
 }
 
-document.getElementById('timeline_div').addEventListener('click', (e) => {
-    const rect = document.getElementById('timeline_div').getBoundingClientRect();
+// Seek based on clicked position
+document.getElementById('progress_bar_wrapper').addEventListener('click', (e) => {
+    const rect = document.getElementById('progress_bar_wrapper').getBoundingClientRect();
     const x = e.clientX - rect.left; // Get the x position of the click within the timeline
     const seekTimeInSeconds = (x / rect.width) * mainTotalDuration; // Calculate the seek time based on the click position
+
+    seekToTime(seekTimeInSeconds);
+});
+
+const draggableCircle = document.getElementById('draggable_circle');
+let isDragging = false;
+
+// Function to update the circle position
+function updateCirclePosition() {
+    let progressionWidth = document.getElementById('show_progression').offsetWidth; // Get the current width of the played portion
+    draggableCircle.style.left = `${progressionWidth - (draggableCircle.offsetWidth / 2)}px`; // Adjust based on circle size
+}
+
+// Initialize circle position
+updateCirclePosition();
+
+// Show/hide circle based on animation state
+document.getElementById('progress_bar_wrapper').addEventListener('mouseenter', function() {
+    if (!showState.playing) {
+        draggableCircle.style.display = 'block'; // Show circle only if the animation is not playing
+    }
+});
+
+document.getElementById('progress_bar_wrapper').addEventListener('mouseleave', function() {
+    draggableCircle.style.display = 'none'; // Hide circle when not hovering
+});
+
+// Drag start
+draggableCircle.addEventListener('mousedown', function(e) {
+    e.preventDefault(); // Prevent default action (text selection, etc.)
+    isDragging = true;
+});
+
+// Drag move
+document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    
+    let rect = document.getElementById('progress_bar_wrapper').getBoundingClientRect();
+    let minX = rect.left;
+    let maxX = rect.right;
+    let newX = e.clientX - minX;
+
+    // Constrain newX within the progressBarWrapper
+    newX = Math.max(0, Math.min(newX, rect.width));
+
+    // Update position of the draggableCircle
+    draggableCircle.style.left = `${newX}px`;
+
+    // Update position of the showProgression
+    document.getElementById('show_progression').style.width = `${newX}px`;
+
+	let progressPercentage = newX / rect.width;
+	let showPosition = progressPercentage * mainTotalDuration;
+	seekToTime(showPosition);
+});
+
+// Drag end
+document.addEventListener('mouseup', function(e) {
+    if (!isDragging) return;
+    isDragging = false;
+
+	let rect = document.getElementById('progress_bar_wrapper').getBoundingClientRect();
+    let x = e.clientX - rect.left; // Get the x position of the click within the timeline
+    let seekTimeInSeconds = (x / rect.width) * mainTotalDuration; // Calculate the seek time based on the click position
 
     seekToTime(seekTimeInSeconds);
 });
