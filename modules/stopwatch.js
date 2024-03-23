@@ -10,14 +10,14 @@ class Stopwatch {
 
     start() {
         if (!this.running) {
-            this.startTime = Date.now() - this.elapsedTime;
+            this.startTime = Date.now() - (this.elapsedTime / Math.abs(this.timeWarp));
             this.running = true;
         }
     }
 
     stop() {
         if (this.running) {
-            this.elapsedTime = Date.now() - this.startTime;
+            this.elapsedTime = (Date.now() - this.startTime) * Math.abs(this.timeWarp);
             this.running = false;
         }
     }
@@ -33,7 +33,7 @@ class Stopwatch {
         if (this.running) {
             return (Date.now() - this.startTime) * Math.abs(this.timeWarp);
         } else {
-            return this.elapsedTime * Math.abs(this.timeWarp);
+            return this.elapsedTime;
         }
     }
 }

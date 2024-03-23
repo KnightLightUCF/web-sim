@@ -35,6 +35,16 @@ import { Stopwatch } from './modules/stopwatch';
 
 let stopwatch = new Stopwatch();
 
+document.getElementById('playback_speed').addEventListener('change', function() {
+	if (showState.playing) {
+		stopwatch.stop();
+		stopwatch.timeWarp = this.value;
+		stopwatch.start();
+	} else {
+		stopwatch.timeWarp = this.value;
+	}
+});
+
 let stopConditionTime = 0;
 
 const scene = new THREE.Scene();
