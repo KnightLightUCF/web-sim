@@ -266,6 +266,7 @@ document.addEventListener('keydown', (event) => {
 		} else {
 			stopwatch.stop();
 		}
+		changePlayPauseBtn();
 	}
 });
 
@@ -289,22 +290,25 @@ animate();
 animateProgressBar();
 
 document.getElementById('play_pause_btn').addEventListener('click', () => {
-    // document.getElementById('play_pause_btn').textContent = showState.playing ? 'Play' : 'Pause';
-	if (!showState.playing) {
-		document.getElementById("play_icon").style.display = 'none';
-		document.getElementById("pause_icon").style.display = 'block';
-	} else {
-		document.getElementById("play_icon").style.display = 'block';
-		document.getElementById("pause_icon").style.display = 'none';
-	}
-
 	showState.playing = !showState.playing;  // Toggle the playing state
 	if (showState.playing) {
 		stopwatch.start();
 	} else {
 		stopwatch.stop();
 	}
+
+	changePlayPauseBtn();
 });
+
+function changePlayPauseBtn() {
+	if (showState.playing) {
+		document.getElementById("play_icon").style.display = 'none';
+		document.getElementById("pause_icon").style.display = 'block';
+	} else {
+		document.getElementById("play_icon").style.display = 'block';
+		document.getElementById("pause_icon").style.display = 'none';
+	}
+};
 
 function seekToTime(seekTimeInSeconds) {
     const wasRunning = stopwatch.running;
