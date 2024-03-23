@@ -2,16 +2,15 @@
 <html>
 	<head lang="en">
 		<meta charset="utf-8">
-		<title>KnightLight Drone Show</title>
+		<title>KnightLight Show Previewing Platform</title>
 		<link rel="stylesheet" href="styles.css">
 
 		<!-- Dependency for import functionality -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+		<script src="https://kit.fontawesome.com/d59a57c743.js" crossorigin="anonymous"></script>
 
 		<script type="module" src="/index.js"></script>
-
-		<!--js entry file-->
 		<script type="module" src="/main.js"></script>
 	</head>
 	<body>
@@ -21,9 +20,37 @@
 		</div>
 
 		<div id="video_controls">
-			<button id="reverse_btn">Reverse</button>
-			<button id="play_pause_btn">Play</button>
-			<button id="fast_forward_btn">Fast Forward</button>
+			<div class="left_controls">
+				<button id="play_pause_btn" class="control_btn">
+					<i class="fa-solid fa-play iconWhite" id="play_icon"></i>
+					<i class="fa-solid fa-pause iconWhite" id="pause_icon" style="display: none;"></i>
+				</button>
+				<!-- <div class="volume_wrapper">
+					<div id="volume_control" class="control_btn">
+						<i class="fa-solid fa-volume-high iconWhite" id="volume_icon"></i>
+					</div>
+					<div id="volume_slider_container" class="control_btn slider-container">
+						<input type="range" id="volume_slider" min="0" max="100" value="100" class="volume-slider"/>
+					</div>
+				</div> -->
+				<div>
+					<span class="time" id="currentTime">00:00</span>
+					<span class="time">/</span>
+					<span class="time" id="duration">00:00</span>
+				</div>
+			</div>
+			<div class="right_controls">
+				<!-- <button id="cc_btn" class="control_btn">
+					<i class="fa-solid fa-closed-captioning iconWhite"></i>
+				</button> -->
+				<button id="settings_btn" class="control_btn">
+					<i class="fa-solid fa-gear iconWhite"></i>
+				</button>
+				<button id="fullscreen_btn" class="control_btn">
+					<i class="fa-solid fa-expand iconWhite" id="expand_icon"></i>
+					<i class="fa-solid fa-compress iconWhite" id="compress_icon" style="display: none;"></i>
+				</button>
+			</div>
 		</div>
 
 		<select id="views_dropdown_menu"></select>

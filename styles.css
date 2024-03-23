@@ -42,20 +42,134 @@ body {
     border-radius: 5px;
 }
 
-#video_controls {
-    position: absolute;
-    top: 91%;
-    left: 41%;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    border-radius: 10px;
+#video_player {
+    position: relative;
+    width: 100%;
+    max-width: 640px; /* Adjust based on your layout */
+    margin: auto;
 }
 
-#video_controls button {
-    background-color: rgba(255, 255, 255, 0.7);
+#progress_bar_container {
+    width: 100%;
+    height: 4px;
+    background-color: #ccc;
+}
+
+#progress_bar {
+    width: 0;
+    height: 100%;
+    background-color: #ff0000; /* YouTube Red */
+}
+
+.control_btn {
+    background: none;
     border: none;
-    padding: 10px;
-    margin: 5px;
-    border-radius: 5px;
+    color: #fff;
     cursor: pointer;
+}
+
+.time {
+    color: #fff;
+}
+
+#volume_control:hover #volume_slider {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: -50px; /* Adjust as needed */
+    width: 100px;
+    height: 4px;
+    background-color: #ccc;
+}
+
+
+#video_controls {
+    width: 35vw;
+    height: 50px;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+}
+
+
+.left_controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.right_controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#settings_btn:hover #settings_dialog {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: -100px;
+    width: 200px;
+    height: 150px;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.iconWhite {
+    font-size: 18pt;
+}
+
+/* Closed Captioning Button */
+#cc_btn {
+    position: relative;
+}
+
+#cc_btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    border-bottom: 2px solid red;
+}
+
+/* Volume Slider */
+#volume_control {
+    width: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-container {
+    width: 0;
+    overflow: hidden;
+    display: inline-block;
+    transition: width 0.5s ease-in-out;
+    vertical-align: middle;
+    /* padding-left: 8px; */
+}
+
+.volume-slider {
+    width: 100px;
+}
+
+.volume_wrapper {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Expand to the full width on hover or focus */
+.volume_wrapper:hover .slider-container,
+.volume_wrapper:focus-within .slider-container {
+    width: 105px;
+    margin-left: 8px;
 }

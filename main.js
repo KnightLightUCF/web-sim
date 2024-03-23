@@ -233,6 +233,7 @@ function animate() {
 		let seconds = Math.floor((time % 60000) / 1000);
 		let milliseconds = time % 1000;
 		let formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ':' + ('00' + milliseconds).slice(-3);
+		document.getElementById("currentTime").innerText = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 		guiObjects.timerOptions.time = formattedTime;
 	}
 
@@ -284,7 +285,15 @@ animate();
 animateProgressBar();
 
 document.getElementById('play_pause_btn').addEventListener('click', () => {
-    document.getElementById('play_pause_btn').textContent = showState.playing ? 'Play' : 'Pause';
+    // document.getElementById('play_pause_btn').textContent = showState.playing ? 'Play' : 'Pause';
+	if (!showState.playing) {
+		document.getElementById("play_icon").style.display = 'none';
+		document.getElementById("pause_icon").style.display = 'block';
+	} else {
+		document.getElementById("play_icon").style.display = 'block';
+		document.getElementById("pause_icon").style.display = 'none';
+	}
+
 	showState.playing = !showState.playing;  // Toggle the playing state
 	if (showState.playing) {
 		stopwatch.start();
@@ -308,6 +317,7 @@ function seekToTime(seekTimeInSeconds) {
 	let seconds = Math.floor((time % 60000) / 1000);
 	let milliseconds = time % 1000;
 	let formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ':' + ('00' + milliseconds).slice(-3);
+	document.getElementById("currentTime").innerText = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 	guiObjects.timerOptions.time = formattedTime;
 
     // Update the animation and progress bar to reflect the seek
