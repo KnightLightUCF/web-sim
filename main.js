@@ -166,8 +166,6 @@ async function RenderShow(show) {
 	drone_list = result.drones;
 	stopConditionTime = result.maxLandingTime * 1000; // Convert to milliseconds
 
-	console.log(stopConditionTime)
-
 	updateTotalDuration(stopConditionTime);
 
 	mainTotalDuration = stopConditionTime;
@@ -182,8 +180,6 @@ async function RenderShow(show) {
 RenderShow(SkycZip[0]);
 
 let guiObjects = renderGUI(drone, showState, stopwatch, sceneViews, changeCameraView, focusOnDrones, RenderShow).options;
-console.log(guiObjects);
-
 
 function animateProgressBar() {
     if (stopwatch.running) {
@@ -232,7 +228,6 @@ function animate() {
 		// show_animation(drone_list, stopwatch, stopConditionTime, 5000);
 		updateDroneLighting(drone_list, stopwatch);
 		let time = stopwatch.getTime();
-		console.log(time)
 		let minutes = Math.floor(time / 60000);
 		let seconds = Math.floor((time % 60000) / 1000);
 		let milliseconds = time % 1000;
