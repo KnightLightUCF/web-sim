@@ -5,7 +5,7 @@ const gui = new DAT.GUI();
 
 // this need refractored
 // need to swap this to multiple functions e.g (one for the timer, one for the show selection, one for the views, and so on) current state is a a pain to maintain.
-function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, droneFocus, temp) {
+function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, temp) {
 	const options = {
 		Play: false,
 		speed: 2,
@@ -48,9 +48,6 @@ function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraVie
 			}
 		}, true);
 	}
-
-	// Focus on drones button
-	gui.add({ focusOnDrones: droneFocus }, 'focusOnDrones').name('Focus on Drones');
 
 	return { options };
 }

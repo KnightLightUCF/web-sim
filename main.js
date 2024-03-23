@@ -118,37 +118,23 @@ function changeCameraView(selectedViewName) {
 }
 
 function focusOnDrones() {
-	if (!drone_list || drone_list.length === 0) return;
+    if (!drone_list || drone_list.length === 0) return;
 
-	let center = new THREE.Vector3();
-	drone_list.forEach(drone => center.add(drone.position));
-	center.divideScalar(drone_list.length);
+    let center = new THREE.Vector3();
+    drone_list.forEach(drone => center.add(drone.position));
+    center.divideScalar(drone_list.length);
 
-	// Check if the camera's height is below 30
-	// if (camera.position.y < 30) {
-	//     camera.position.setY(30);  // Set the height to 10
-	// }
+    // Create a temporary camera for calculating the target orientation
+    let tempCamera = camera.clone();
+    tempCamera.position.copy(camera.position);
+    tempCamera.lookAt(center);
 
-	// Clone the current camera to avoid modifying the actual camera
-	let cloneCamera = camera.clone();
-	cloneCamera.lookAt(center);
+    // Determines how quickly the camera orientation changes
+    let changeSpeed = 0.05;
 
-	const targetQuaternion = cloneCamera.quaternion;
-
-	new TWEEN.Tween(camera.quaternion)
-		.to({ 
-			x: targetQuaternion.x, 
-			y: targetQuaternion.y, 
-			z: targetQuaternion.z, 
-			w: targetQuaternion.w 
-		}, 700)
-		.easing(TWEEN.Easing.Quadratic.InOut)
-		.onComplete(() => {
-			// Update the OrbitControls target
-			controls.target.copy(center);
-			controls.update();
-		})
-		.start();
+    camera.quaternion.slerp(tempCamera.quaternion, changeSpeed);
+    controls.target.lerp(center, changeSpeed);
+    controls.update();
 }
 
 import { updateTotalDuration, updateProgressBar } from './index.js';
@@ -177,9 +163,10 @@ async function RenderShow(show) {
 
 	return drone_list;
 }
+
 RenderShow(SkycZip[0]);
 
-let guiObjects = renderGUI(drone, showState, stopwatch, sceneViews, changeCameraView, focusOnDrones, RenderShow).options;
+let guiObjects = renderGUI(drone, showState, stopwatch, sceneViews, changeCameraView, RenderShow).options;
 
 function animateProgressBar() {
     if (stopwatch.running) {
@@ -189,7 +176,6 @@ function animateProgressBar() {
     }
     requestAnimationFrame(animateProgressBar);
 }
-
 
 function animate() {
 	requestAnimationFrame( animate );
@@ -221,6 +207,11 @@ function animate() {
 	if (camera.position.y < MIN_HEIGHT) {
 		camera.position.y = MIN_HEIGHT;
 	}
+
+    // Automatically focus on drones if the checkbox is checked
+    if (document.getElementById("focus_drones").checked) {
+        focusOnDrones();
+    }
 
 	// Pause and Play
 	if (showState.playing) {
