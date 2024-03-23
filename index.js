@@ -193,7 +193,7 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// document.getElementById("focus_drones").addEventListener('change', () => {
+// document.getElementById("focus_drones").addEventListener('change', function() {
 //     if (this.checked) {
 //         // Checked
 //     } else {
