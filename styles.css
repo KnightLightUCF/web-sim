@@ -34,7 +34,7 @@ body {
 #video_player {
     position: relative;
     width: 100%;
-    max-width: 640px; /* Adjust based on your layout */
+    max-width: 640px;
     margin: auto;
 }
 
@@ -47,7 +47,7 @@ body {
 #progress_bar {
     width: 0;
     height: 100%;
-    background-color: #ff0000; /* YouTube Red */
+    background-color: #ff0000;
 }
 
 .control_btn {
@@ -65,27 +65,11 @@ body {
     display: block;
     position: absolute;
     right: 0;
-    top: -50px; /* Adjust as needed */
+    top: -50px;
     width: 100px;
     height: 4px;
     background-color: #ccc;
 }
-
-
-/* #video_controls {
-    width: 35vw;
-    height: 50px;
-    position: absolute;
-    top: 90%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-} */
 
 #video_controls {
     width: 35vw;
@@ -156,7 +140,6 @@ body {
     display: inline-block;
     transition: width 0.5s ease-in-out;
     vertical-align: middle;
-    /* padding-left: 8px; */
 }
 
 .volume-slider {
@@ -219,4 +202,98 @@ body {
     left: 100%;
     transform: translateX(-50%);
     display: none;
+}
+
+/* Settings Modal */
+.settings-popup {
+    position: absolute;
+    bottom: 65px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    color: #fff;
+    padding: 10px;
+    width: auto;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    z-index: 10;
+}
+
+.setting-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.setting-label {
+    color: #fff;
+    margin-right: 10px;
+}
+
+.styled-select {
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 15px;
+    width: 15px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #ff0000;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #ff0000;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
+.checkbox-container {
+    margin-top: 10px;
 }

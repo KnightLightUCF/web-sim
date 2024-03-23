@@ -171,4 +171,34 @@ function updateIcons() {
     }
 }
 
+const settingsBtn = document.getElementById('settings_btn');
+const settingsPopup = document.getElementById('settings_popup');
+const gearIcon = settingsBtn.querySelector('.fa-gear');
+
+// Toggle the popup display and rotate the gear
+settingsBtn.addEventListener('click', () => {
+    const isVisible = settingsPopup.style.display !== 'none';
+    settingsPopup.style.display = isVisible ? 'none' : 'block';
+    
+    // Rotate the gear icon in the opposite direction
+    gearIcon.style.transition = 'transform 0.3s ease';
+    gearIcon.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(-90deg)';
+});
+
+// Close the popup if clicked outside
+window.addEventListener('click', (event) => {
+    if (!settingsBtn.contains(event.target) && !settingsPopup.contains(event.target)) {
+        settingsPopup.style.display = 'none';
+        gearIcon.style.transform = 'rotate(0deg)'; // Reset the gear rotation
+    }
+});
+
+// document.getElementById("focus_drones").addEventListener('change', () => {
+//     if (this.checked) {
+//         // Checked
+//     } else {
+//         // Not checked
+//     }
+// });
+
 export { updateTotalDuration, updateProgressBar };

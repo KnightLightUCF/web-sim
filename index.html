@@ -47,6 +47,25 @@
 					<button id="settings_btn" class="control_btn">
 						<i class="fa-solid fa-gear iconWhite"></i>
 					</button>
+					<div id="settings_popup" class="settings-popup" style="display: none;">
+						<div class="setting-option" style="padding-bottom: 5px;">
+							<div class="setting-label">Playback Speed:</div>
+							<select id="playback_speed" class="styled-select">
+								<option value="0.5">0.5x</option>
+								<option value="1" selected>1x</option>
+								<option value="2">2x</option>
+								<option value="5">5x</option>
+							</select>
+						</div>
+						<div class="setting-option">
+							<div class="setting-label">Always Focus on Drones:</div>
+							<label class="switch">
+								<input type="checkbox" id="focus_drones">
+								<span class="slider round"></span>
+							</label>
+						</div>
+					</div>
+					
 					<button id="fullscreen_btn" class="control_btn">
 						<i class="fa-solid fa-expand iconWhite" id="expand_icon"></i>
 						<i class="fa-solid fa-compress iconWhite" id="compress_icon" style="display: none;"></i>
