@@ -21,6 +21,7 @@ const stats = new Stats();
 stats.domElement.style.position = 'absolute';
 stats.domElement.style.left = '0px';
 stats.domElement.style.top = '0px';
+stats.domElement.style.display = 'none';
 document.body.appendChild(stats.domElement);
 
 let showState = {
@@ -405,4 +406,14 @@ document.addEventListener('mouseup', function(e) {
     let seekTimeInSeconds = (x / rect.width) * mainTotalDuration; // Calculate the seek time based on the click position
 
     seekToTime(seekTimeInSeconds);
+});
+
+document.getElementById("performance_stats").addEventListener('change', function() {
+    if (this.checked) {
+        // Checked
+		stats.domElement.style.display = 'block';
+    } else {
+        // Not checked
+		stats.domElement.style.display = 'none';
+    }
 });
