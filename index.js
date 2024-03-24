@@ -1,27 +1,10 @@
 const showProgression = document.getElementById('show_progression');
-const hoverTimeMarker = document.getElementById('hover_time_marker');
-const timelineDiv = document.getElementById('timeline_div');
 
 let progress = 0; // Initial progress
 let totalDuration = 10; // Total duration in seconds
 
 // Set initial progress
 setProgress(progress);
-
-// Event listeners
-// timelineDiv.addEventListener('mousemove', (e) => {
-//     const rect = timelineDiv.getBoundingClientRect();
-//     const x = e.clientX - rect.left;
-//     const currentTimeInMs = (x / rect.width) * totalDuration;
-//     const currentTimeInSeconds = currentTimeInMs / 1000;
-//     hoverTimeMarker.style.left = `${x}px`;
-//     hoverTimeMarker.textContent = `${currentTimeInSeconds.toFixed(1)}s`;
-//     hoverTimeMarker.style.display = 'block';
-// });
-
-// timelineDiv.addEventListener('mouseleave', () => {
-//     hoverTimeMarker.style.display = 'none';
-// });
 
 function formatDuration(totalDuration) {
     const totalSeconds = totalDuration / 1000;
@@ -42,21 +25,11 @@ function formatDuration(totalDuration) {
     return formattedTime;
 }
 
-// function setProgress(value) {
-//     progress = Math.min(Math.max(value, 0), 100); // Ensure progress is between 0 and 100
-//     showProgression.style.width = `${progress}%`;
-// }
-
 function setProgress(value) {
     progress = Math.min(Math.max(value, 0), 100); // Ensure progress is between 0 and 100
 
-    // const progressBar = document.getElementById('show_progression');
-    // const progressBarWidth = progressPercentage; // Assuming this is a percentage value (0 to 100)
-
-    // Set the width of the progress bar
-    // showProgression.style.width = progressBarWidth + '%';
+    // Set width of the progress bar
     showProgression.style.width = `${progress}%`;
-
 
     // If the progress bar is nearly full, apply the border-radius
     if (progress >= 99) {
@@ -68,7 +41,6 @@ function setProgress(value) {
         showProgression.style.borderBottomRightRadius = '0';
     }
 }
-
 
 function updateTotalDuration(newTotalDuration) {
     totalDuration = newTotalDuration;
@@ -192,13 +164,5 @@ window.addEventListener('click', (event) => {
         gearIcon.style.transform = 'rotate(0deg)'; // Reset the gear rotation
     }
 });
-
-// document.getElementById("focus_drones").addEventListener('change', function() {
-//     if (this.checked) {
-//         // Checked
-//     } else {
-//         // Not checked
-//     }
-// });
 
 export { updateTotalDuration, updateProgressBar };
