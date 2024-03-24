@@ -297,6 +297,7 @@ document.getElementById('play_pause_btn').addEventListener('click', () => {
 	}
 
 	changePlayPauseBtn();
+	document.getElementById('play_pause_btn').blur();
 });
 
 function changePlayPauseBtn() {
