@@ -5,7 +5,12 @@ const gui = new DAT.GUI();
 
 // this need refractored
 // need to swap this to multiple functions e.g (one for the timer, one for the show selection, one for the views, and so on) current state is a a pain to maintain.
-function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, temp) {
+function renderGUI(drone, showState, stopwatch, predefinedViews, changeCameraView, temp, productionENV) {
+
+	if (productionENV) {
+		gui.hide();
+	}
+
 	const options = {
 		Play: false,
 		speed: 2,

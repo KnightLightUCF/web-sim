@@ -28,6 +28,8 @@ let showState = {
 	playing: false
 };
 
+const productionENV = false;
+
 // The minimum height for the camera
 const MIN_HEIGHT = 0;
 
@@ -176,7 +178,7 @@ async function RenderShow(show) {
 
 RenderShow(SkycZip[0]);
 
-let guiObjects = renderGUI(drone, showState, stopwatch, sceneViews, changeCameraView, RenderShow).options;
+let guiObjects = renderGUI(drone, showState, stopwatch, sceneViews, changeCameraView, RenderShow, productionENV).options;
 
 function animateProgressBar() {
     if (stopwatch.running) {
@@ -194,23 +196,25 @@ function animate() {
 	TWEEN.update();
 
 	// Moving the camera
-	if (moveState.forward) {
-		camera.translateZ(-guiObjects.speed);
-	}
-	if (moveState.backward) {
-		camera.translateZ(guiObjects.speed);
-	}
-	if (moveState.left) {
-		camera.translateX(-guiObjects.speed);
-	}
-	if (moveState.right) {
-		camera.translateX(guiObjects.speed);
-	}
-	if (moveState.up) {
-		camera.translateY(guiObjects.speed);
-	}
-	if (moveState.down) {
-		camera.translateY(-guiObjects.speed);
+	if (productionENV == false) {
+		if (moveState.forward) {
+			camera.translateZ(-guiObjects.speed);
+		}
+		if (moveState.backward) {
+			camera.translateZ(guiObjects.speed);
+		}
+		if (moveState.left) {
+			camera.translateX(-guiObjects.speed);
+		}
+		if (moveState.right) {
+			camera.translateX(guiObjects.speed);
+		}
+		if (moveState.up) {
+			camera.translateY(guiObjects.speed);
+		}
+		if (moveState.down) {
+			camera.translateY(-guiObjects.speed);
+		}
 	}
 
 	// Constrain camera's Y position
@@ -234,7 +238,7 @@ function animate() {
 		let milliseconds = time % 1000;
 		let formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ':' + ('00' + milliseconds).slice(-3);
 		document.getElementById("currentTime").innerText = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-		guiObjects.timerOptions.time = formattedTime;
+		if (productionENV == false) { guiObjects.timerOptions.time = formattedTime; }
 	}
 
 	// Update statistics
@@ -322,7 +326,7 @@ function seekToTime(seekTimeInSeconds) {
 	let milliseconds = time % 1000;
 	let formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ':' + ('00' + milliseconds).slice(-3);
 	document.getElementById("currentTime").innerText = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-	guiObjects.timerOptions.time = formattedTime;
+	if (productionENV == false) { guiObjects.timerOptions.time = formattedTime; }
 
     // Update the animation and progress bar to reflect the seek
     show_animation(drone_list, stopwatch, stopConditionTime, seekTimeInSeconds);
