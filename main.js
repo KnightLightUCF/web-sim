@@ -52,7 +52,6 @@ let stopConditionTime = 0;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 5000);
 
-
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -406,9 +405,11 @@ document.addEventListener('mouseup', function(e) {
     if (!isDragging) return;
     isDragging = false;
 
-	let rect = document.getElementById('progress_bar_wrapper').getBoundingClientRect();
-    let x = e.clientX - rect.left; // Get the x position of the click within the timeline
-    let seekTimeInSeconds = (x / rect.width) * mainTotalDuration; // Calculate the seek time based on the click position
+    let rect = document.getElementById('progress_bar_wrapper').getBoundingClientRect();
+    let newX = Math.min(Math.max(e.clientX - rect.left, 5), rect.width);
+
+    let seekTimeInSeconds = (newX / rect.width) * mainTotalDuration;
+    seekTimeInSeconds = Math.max(0, Math.min(seekTimeInSeconds, mainTotalDuration));
 
     seekToTime(seekTimeInSeconds);
 });
